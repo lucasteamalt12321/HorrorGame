@@ -1,0 +1,144 @@
+[gd_scene load_steps=16 format=3]
+
+[sub_resource type="BoxMesh" id="BoxMesh_room_floor"]
+size = Vector3(10, 0.2, 8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_back_wall"]
+size = Vector3(10, 4, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_side_wall"]
+size = Vector3(0.2, 4, 8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_desk"]
+size = Vector3(5.5, 0.25, 2.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_desk_leg"]
+size = Vector3(0.25, 2.2, 0.25)
+
+[sub_resource type="BoxMesh" id="BoxMesh_monitor_body"]
+size = Vector3(3.2, 2.1, 0.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_monitor_stand"]
+size = Vector3(0.3, 1.0, 0.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_monitor_base"]
+size = Vector3(1.5, 0.12, 0.7)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_screen"]
+size = Vector2(2.8, 1.7)
+
+[sub_resource type="StandardMaterial3D" id="Material_floor"]
+albedo_color = Color(0.18, 0.16, 0.14, 1)
+
+[sub_resource type="StandardMaterial3D" id="Material_wall"]
+albedo_color = Color(0.32, 0.3, 0.28, 1)
+
+[sub_resource type="StandardMaterial3D" id="Material_desk"]
+albedo_color = Color(0.28, 0.16, 0.08, 1)
+
+[sub_resource type="StandardMaterial3D" id="Material_monitor"]
+albedo_color = Color(0.025, 0.025, 0.03, 1)
+metallic = 0.2
+roughness = 0.35
+
+[sub_resource type="SubViewportTexture" id="ViewportTexture_screen"]
+viewport_path = NodePath("../../SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="Material_screen"]
+albedo_texture = SubResource("ViewportTexture_screen")
+roughness = 0.2
+
+[sub_resource type="Environment" id="Environment_room"]
+background_mode = 1
+background_color = Color(0.025, 0.025, 0.03, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.35, 0.35, 0.4, 1)
+ambient_light_energy = 0.7
+
+[node name="TestRoom" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_room")
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_room_floor")
+material_override = SubResource("Material_floor")
+position = Vector3(0, -0.1, 0)
+
+[node name="BackWall" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_back_wall")
+material_override = SubResource("Material_wall")
+position = Vector3(0, 2, -4)
+
+[node name="LeftWall" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_side_wall")
+material_override = SubResource("Material_wall")
+position = Vector3(-5, 2, 0)
+
+[node name="Desk" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_desk")
+material_override = SubResource("Material_desk")
+position = Vector3(0, 1.35, -0.5)
+
+[node name="Leg1" type="MeshInstance3D" parent="Desk"]
+mesh = SubResource("BoxMesh_desk_leg")
+material_override = SubResource("Material_desk")
+position = Vector3(-2.3, -1.1, -0.7)
+
+[node name="Leg2" type="MeshInstance3D" parent="Desk"]
+mesh = SubResource("BoxMesh_desk_leg")
+material_override = SubResource("Material_desk")
+position = Vector3(2.3, -1.1, -0.7)
+
+[node name="Leg3" type="MeshInstance3D" parent="Desk"]
+mesh = SubResource("BoxMesh_desk_leg")
+material_override = SubResource("Material_desk")
+position = Vector3(-2.3, -1.1, 0.3)
+
+[node name="Leg4" type="MeshInstance3D" parent="Desk"]
+mesh = SubResource("BoxMesh_desk_leg")
+material_override = SubResource("Material_desk")
+position = Vector3(2.3, -1.1, 0.3)
+
+[node name="Monitor" type="Node3D" parent="."]
+position = Vector3(0, 2.7, -1.1)
+
+[node name="Body" type="MeshInstance3D" parent="Monitor"]
+mesh = SubResource("BoxMesh_monitor_body")
+material_override = SubResource("Material_monitor")
+
+[node name="Screen" type="MeshInstance3D" parent="Monitor"]
+mesh = SubResource("PlaneMesh_screen")
+material_override = SubResource("Material_screen")
+position = Vector3(0, 0, -0.161)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="Stand" type="MeshInstance3D" parent="Monitor"]
+mesh = SubResource("BoxMesh_monitor_stand")
+material_override = SubResource("Material_monitor")
+position = Vector3(0, -1.45, 0)
+
+[node name="Base" type="MeshInstance3D" parent="Monitor"]
+mesh = SubResource("BoxMesh_monitor_base")
+material_override = SubResource("Material_monitor")
+position = Vector3(0, -1.95, 0)
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(896, 544)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(0, 2.5, 3.5)
+rotation_degrees = Vector3(-8, 180, 0)
+current = true
+
+[node name="RoomLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-45, -25, 0)
+light_energy = 0.7
+shadow_enabled = true
+
+[node name="DeskLight" type="OmniLight3D" parent="."]
+position = Vector3(0, 3.4, -1)
+light_color = Color(0.7, 0.8, 1, 1)
+light_energy = 3.0
+omni_range = 5.0
