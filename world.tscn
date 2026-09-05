@@ -1,3 +1,14 @@
-[gd_scene format=3 uid="uid://be1ca8it3obq6"]
+[gd_scene load_steps=4 format=3]
 
-[node name="World" type="Node3D" unique_id=666394853]
+[ext_resource type="PackedScene" path="res://test_room.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://mobile_controls.tscn" id="3"]
+
+[node name="World" type="Node3D"]
+
+[node name="Room" parent="." instance=ExtResource("1")]
+
+[node name="Player" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3.5)
+
+[node name="MobileControls" parent="." instance=ExtResource("3")]
