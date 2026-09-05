@@ -3,7 +3,7 @@ extends Control
 var look_delta = Vector2.ZERO
 var touching_camera = false
 var last_touch_pos = Vector2.ZERO
-var移动按钮 = []
+var move_buttons = []
 
 @onready var joystick_base = $JoystickBase
 @onready var joystick_knob = $JoystickBase/Knob
@@ -12,7 +12,7 @@ var移动按钮 = []
 var joystick_touch_index = -1
 var joystick_center = Vector2.ZERO
 var joystick_radius = 50.0
-var移动方向 = Vector2.ZERO
+var move_dir = Vector2.ZERO
 
 func _ready():
 	joystick_center = joystick_base.position + joystick_base.size / 2
@@ -30,7 +30,7 @@ func _input(event):
 		else:
 			if event.index == joystick_touch_index:
 				joystick_touch_index = -1
-				移动方向 = Vector2.ZERO
+				move_dir = Vector2.ZERO
 				joystick_knob.position = joystick_base.size / 2 - joystick_knob.size / 2
 			if touching_camera:
 				touching_camera = false
@@ -40,7 +40,7 @@ func _input(event):
 			var diff = event.position - joystick_center
 			var clamped = diff.clamped(joystick_radius)
 			joystick_knob.position = joystick_base.size / 2 + clamped - joystick_knob.size / 2
-			移动方向 = clamped / joystick_radius
+			move_dir = clamped / joystick_radius
 
 		elif touching_camera:
 			var diff = event.position - last_touch_pos
@@ -52,7 +52,7 @@ func _input(event):
 func _process(_delta):
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
-		player.mobile_input = 移动方向
+		player.mobile_input = move_dir
 
 func _on_jump_button_pressed():
 	var player = get_tree().get_first_node_in_group("player")
