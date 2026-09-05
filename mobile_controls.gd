@@ -2,25 +2,18 @@ extends Control
 
 var touching_camera = false
 var last_touch_pos = Vector2.ZERO
+var joystick_touch_index = -1
+var move_dir = Vector2.ZERO
 
 @onready var joystick_base = $JoystickBase
 @onready var joystick_knob = $JoystickBase/Knob
 
-var joystick_touch_index = -1
-var joystick_center = Vector2.ZERO
-var joystick_radius = 50.0
-var move_dir = Vector2.ZERO
-
-func _ready():
-	joystick_radius = joystick_base.size.x / 2 - 10
-
 func _input(event):
 	if event is InputEventScreenTouch:
 		if event.pressed:
-			if event.position.x < get_viewport_rect().size.x * 0.4:
+			var stick_rect = Rect2(joystick_base.global_position, joystick_base.size)
+			if stick_rect.has_point(event.position):
 				joystick_touch_index = event.index
-				joystick_center = event.position
-				joystick_base.global_position = event.position - joystick_base.size / 2
 			elif event.position.x > get_viewport_rect().size.x * 0.5:
 				touching_camera = true
 				last_touch_pos = event.position
@@ -29,15 +22,17 @@ func _input(event):
 				joystick_touch_index = -1
 				move_dir = Vector2.ZERO
 				joystick_knob.position = joystick_base.size / 2 - joystick_knob.size / 2
-			if touching_camera:
+			if touching_camera and not event.pressed:
 				touching_camera = false
 
 	if event is InputEventScreenDrag:
 		if event.index == joystick_touch_index:
-			var diff = event.position - joystick_center
-			var clamped = diff.clamped(joystick_radius)
+			var center = joystick_base.global_position + joystick_base.size / 2
+			var diff = event.position - center
+			var radius = joystick_base.size.x / 2 - joystick_knob.size.x / 2
+			var clamped = diff.clamped(radius)
 			joystick_knob.position = joystick_base.size / 2 + clamped - joystick_knob.size / 2
-			move_dir = clamped / joystick_radius
+			move_dir = clamped / radius
 
 		elif touching_camera:
 			var diff = event.position - last_touch_pos
