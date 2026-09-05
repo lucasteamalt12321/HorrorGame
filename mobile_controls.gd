@@ -1,13 +1,10 @@
 extends Control
 
-var look_delta = Vector2.ZERO
 var touching_camera = false
 var last_touch_pos = Vector2.ZERO
-var move_buttons = []
 
 @onready var joystick_base = $JoystickBase
 @onready var joystick_knob = $JoystickBase/Knob
-@onready var jump_btn = $JumpButton
 
 var joystick_touch_index = -1
 var joystick_center = Vector2.ZERO
@@ -15,7 +12,7 @@ var joystick_radius = 50.0
 var move_dir = Vector2.ZERO
 
 func _ready():
-	joystick_center = joystick_base.position + joystick_base.size / 2
+	joystick_radius = joystick_base.size.x / 2 - 10
 
 func _input(event):
 	if event is InputEventScreenTouch:
@@ -24,7 +21,7 @@ func _input(event):
 				joystick_touch_index = event.index
 				joystick_center = event.position
 				joystick_base.global_position = event.position - joystick_base.size / 2
-			elif event.position.x > get_viewport_rect().size.x * 0.6:
+			elif event.position.x > get_viewport_rect().size.x * 0.5:
 				touching_camera = true
 				last_touch_pos = event.position
 		else:
@@ -47,7 +44,9 @@ func _input(event):
 			last_touch_pos = event.position
 			var player = get_tree().get_first_node_in_group("player")
 			if player:
-				player.camera_offset -= diff * 0.003
+				player.rotate_y(-diff.x * 0.003)
+				player.head.rotate_x(-diff.y * 0.003)
+				player.head.rotation.x = clamp(player.head.rotation.x, -PI/2, PI/2)
 
 func _process(_delta):
 	var player = get_tree().get_first_node_in_group("player")
