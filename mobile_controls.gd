@@ -11,10 +11,22 @@ var player: CharacterBody3D
 @onready var jump_button: Button = $JumpButton
 
 func _ready() -> void:
+	# Mobile controls must never be visible or active on desktop.
+	if not _is_mobile():
+		visible = false
+		process_mode = Node.PROCESS_MODE_DISABLED
+		return
+
 	player = get_tree().get_first_node_in_group("player") as CharacterBody3D
 	_reset_joystick()
 
+func _is_mobile() -> bool:
+	return OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios")
+
 func _input(event: InputEvent) -> void:
+	if not _is_mobile():
+		return
+
 	if event is InputEventScreenTouch:
 		_handle_screen_touch(event)
 	elif event is InputEventScreenDrag:
@@ -29,11 +41,9 @@ func _handle_screen_touch(event: InputEventScreenTouch) -> void:
 			_update_joystick(event.position)
 			return
 
-		# Don't use the jump button as camera input.
 		if jump_button.get_global_rect().has_point(event.position):
 			return
 
-		# Camera control is the right side of the screen.
 		if event.position.x > get_viewport_rect().size.x * 0.5:
 			touching_camera = true
 			last_touch_pos = event.position
@@ -43,7 +53,7 @@ func _handle_screen_touch(event: InputEventScreenTouch) -> void:
 			move_dir = Vector2.ZERO
 			_reset_joystick()
 
-		if event.index == joystick_touch_index or touching_camera:
+		if touching_camera:
 			touching_camera = false
 
 func _handle_screen_drag(event: InputEventScreenDrag) -> void:
