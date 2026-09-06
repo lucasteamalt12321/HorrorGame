@@ -35,10 +35,10 @@ size = Vector3(0.2, 4, 8)
 albedo_color = Color(0.28, 0.16, 0.08, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_desk"]
-size = Vector3(5.5, 0.25, 2.2)
+size = Vector3(2.75, 0.25, 1.1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_desk_leg"]
-size = Vector3(0.25, 2.2, 0.25)
+size = Vector3(0.125, 2.2, 0.125)
 
 [sub_resource type="StandardMaterial3D" id="Material_monitor"]
 albedo_color = Color(0.025, 0.025, 0.03, 1)
@@ -129,27 +129,27 @@ material_override = SubResource("Material_desk")
 mesh = SubResource("BoxMesh_desk")
 
 [node name="Leg1" type="MeshInstance3D" parent="Desk"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3, -1.1, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, -1.1, -0.35)
 material_override = SubResource("Material_desk")
 mesh = SubResource("BoxMesh_desk_leg")
 
 [node name="Leg2" type="MeshInstance3D" parent="Desk"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3, -1.1, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, -1.1, -0.35)
 material_override = SubResource("Material_desk")
 mesh = SubResource("BoxMesh_desk_leg")
 
 [node name="Leg3" type="MeshInstance3D" parent="Desk"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3, -1.1, 0.3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, -1.1, 0.15)
 material_override = SubResource("Material_desk")
 mesh = SubResource("BoxMesh_desk_leg")
 
 [node name="Leg4" type="MeshInstance3D" parent="Desk"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3, -1.1, 0.3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, -1.1, 0.15)
 material_override = SubResource("Material_desk")
 mesh = SubResource("BoxMesh_desk_leg")
 
 [node name="Monitor" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -1.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.485, -1.1)
 
 [node name="Body" type="MeshInstance3D" parent="Monitor"]
 material_override = SubResource("Material_monitor")
