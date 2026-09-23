@@ -57,12 +57,12 @@ res://
 | Сцена | Путь | Назначение |
 |---|---|---|
 | `world.tscn` | `scenes/levels/world.tscn` | Корневая сцена (точка входа) |
-| `test_room.tscn` | `scenes/levels/test_room/test_room.tscn` | Прототип комнаты: пол, стены, стол, монитор, свет |
+| `office.tscn` | `scenes/levels/office/office.tscn` | Рабочая локация: комната, стол, монитор, клавиатура, мышь, стул, дверь, шкаф, окно, растение, свет |
+| `test_room.tscn` | `scenes/levels/test_room/test_room.tscn` | Прототип комнаты (референс, в мире больше не используется) |
 | `player.tscn` | `scenes/player/player.tscn` | `CharacterBody3D` от первого лица (WASD, мышь, прыжок) |
 | `mobile_controls.tscn` | `ui/mobile/mobile_controls.tscn` | Виртуальный джойстик + прыжок (только мобильные) |
 
 Планируемые сцены (фазы 1+):
-- `office` — полноценная рабочая локация (стол, компьютер, окружение).
 - `computer` — интерактивный компьютер (монитор + интерфейс).
 - `monitor` — SubViewport, в который рендерится 2D-игра.
 - `minigame` — тестируемая 2D pixel-art игра.

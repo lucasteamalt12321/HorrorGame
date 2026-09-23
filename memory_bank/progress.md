@@ -2,9 +2,9 @@
 
 ## Статус
 
-- **Текущая итерация:** ИТЕРАЦИЯ 2 (PHASE 1) — завершена и закоммичена.
-- **Прогресс по Project Deliverables:** 13% (DL-01, DL-02; см. `projectbrief.md`).
-- **Last checked commit:** `c3467749521fd701cf85bc1dee8244a236d8af14`
+- **Текущая итерация:** ИТЕРАЦИЯ 3 (PHASE 2) — завершена, готова к коммиту.
+- **Прогресс по Project Deliverables:** 21% (DL-01..03; см. `projectbrief.md`).
+- **Last checked commit:** `c3467749521fd701cf85bc1dee8244a236d8af14` (PHASE 2 в рабочей копии, не закоммичена)
 
 ## Что сделано до этого контекста (git history)
 
@@ -42,6 +42,8 @@
 | Дата | Что | Файлы |
 |---|---|---|
 | 2026-09-23 | PHASE 0: архитектура, структура, Memory Bank, actions | `docs/*`, `memory_bank/*`, `project.godot`, перемещённые `scenes/*`, `ui/*` |
+| 2026-09-23 | PHASE 1: GameManager (modes/routing/mouse) + PlayerController | `systems/game_manager/*`, `scenes/player/player.gd`, `ui/mobile/mobile_controls.gd`, `project.godot` |
+| 2026-09-23 | PHASE 2: офис (комната, стол, монитор, клавиатура, мышь, стул, дверь, шкаф, окно, растение, свет) | `scenes/levels/office/office.tscn`, `scenes/levels/world.tscn`, `docs/*`, `memory_bank/*` |
 
 ## Чек-лист завершения сессии
 
