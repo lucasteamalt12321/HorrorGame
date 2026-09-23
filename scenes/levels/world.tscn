@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3]
 
-[ext_resource type="PackedScene" path="res://test_room.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://player.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://mobile_controls.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/levels/test_room/test_room.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://ui/mobile/mobile_controls.tscn" id="3"]
 
 [node name="World" type="Node3D"]
 

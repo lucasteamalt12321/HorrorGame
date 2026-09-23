@@ -61,7 +61,7 @@ func _handle_screen_drag(event: InputEventScreenDrag) -> void:
 		_update_joystick(event.position)
 		return
 
-	if touching_camera and player:
+	if touching_camera and player and GameManager.is_exploring():
 		var diff := event.position - last_touch_pos
 		last_touch_pos = event.position
 
@@ -92,5 +92,5 @@ func _process(_delta: float) -> void:
 		player.mobile_input = move_dir
 
 func _on_jump_button_pressed() -> void:
-	if player and player.is_on_floor():
-		player.velocity.y = player.JUMP_VELOCITY
+	if player and player.is_on_floor() and GameManager.is_exploring():
+		player.velocity.y = player.jump_velocity
