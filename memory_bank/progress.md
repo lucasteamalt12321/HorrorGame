@@ -2,9 +2,9 @@
 
 ## Статус
 
-- **Текущая итерация:** ИТЕРАЦИЯ 2 (PHASE 1).
-- **Прогресс по Project Deliverables:** 5–8% (DL-01 completed, DL-02 in_progress; см. `projectbrief.md`).
-- **Last checked commit:** `48c633f88fb495fdcd66619484a4984ffbca8f97`
+- **Текущая итерация:** ИТЕРАЦИЯ 2 (PHASE 1) — завершена и закоммичена.
+- **Прогресс по Project Deliverables:** 13% (DL-01, DL-02; см. `projectbrief.md`).
+- **Last checked commit:** `c3467749521fd701cf85bc1dee8244a236d8af14`
 
 ## Что сделано до этого контекста (git history)
 
@@ -23,12 +23,13 @@
 - `player.gd`: прыжок переведён с `ui_accept` на action `jump`.
 - Созданы `docs/ARCHITECTURE.md`, `docs/README.md`, полный `memory_bank/`.
 
-## Изменения ИТЕРАЦИИ 2 (в работе)
+## Изменения ИТЕРАЦИИ 2 (сделано)
 
 - `systems/game_manager/game_manager.gd` — новый autoload `GameManager` (режимы, mouse, ui_cancel).
 - `project.godot` — добавлен `[autoload] GameManager`.
 - `scenes/player/player.gd` — рефактор: `@export speed/jump_velocity/mouse_sensitivity`, гейт по `GameManager.is_exploring()`, курсор больше не трогает.
 - `ui/mobile/mobile_controls.gd` — камера/прыжок гейтятся по режиму.
+- Закоммичено и запушено: `c346774`.
 
 ## Known Issues
 
