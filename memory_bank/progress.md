@@ -44,6 +44,7 @@
 | 2026-09-23 | PHASE 0: архитектура, структура, Memory Bank, actions | `docs/*`, `memory_bank/*`, `project.godot`, перемещённые `scenes/*`, `ui/*` |
 | 2026-09-23 | PHASE 1: GameManager (modes/routing/mouse) + PlayerController | `systems/game_manager/*`, `scenes/player/player.gd`, `ui/mobile/mobile_controls.gd`, `project.godot` |
 | 2026-09-23 | PHASE 2: офис (комната, стол, монитор, клавиатура, мышь, стул, дверь, шкаф, окно, растение, свет) | `scenes/levels/office/office.tscn`, `scenes/levels/world.tscn`, `docs/*`, `memory_bank/*` |
+| 2026-09-24 | PHASE 2 fixes: геометрия офиса (клавиатура выровнена, шкаф на полу, перемычка двери, окно вплотную, растение, монитор на столе, дверь по центру рамы) | `scenes/levels/office/office.tscn` |
 
 ## Чек-лист завершения сессии
 
