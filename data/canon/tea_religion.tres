@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CanonEntryResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/canon_entry_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+term = "Чайная религия"
+status = 0
+surfaces_in = PackedStringArray("глоссарий сборки (T07_GLOSSARY)")
+safe_facts = PackedStringArray()
+open_questions = PackedStringArray("Что обозначает — не установлено.", "Как термин должен появляться в игре — не установлено: объекта «чайник» в TEST_ROOM нет, строки в списке локализации тоже нет.", "Связь с остальными терминами не подтверждена.")
+source_note = "Термин из ТЗ. Расшифровка намеренно не даётся: глоссарий в игре показывает его как НЕ ПОДТВЕРЖДЕНО. Проверка сборки не нашла обеих упомянутых поверхностей, поэтому entry остаётся TODO с пустым safe_facts, а невыполненная часть содержания вынесена в open_questions."

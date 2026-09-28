@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch8_object_disappear"
+kind = 2
+target = 1
+title = "Предмет исчезает"
+min_tension = 5
+delay = 26
+duration = 0
+cooldown = 80
+prop_id = "photo_colleague"
+one_shot = true

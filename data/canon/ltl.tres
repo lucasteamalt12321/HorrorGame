@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CanonEntryResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/canon_entry_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+term = "LTL"
+status = 0
+surfaces_in = PackedStringArray("надпись «LTL» на стене уровня L1_GARDEN (BUG_LTL_INSCRIPTION)", "слово «LTL» в наборе текстовых мутаций (BUG_TEXT_MUTATION)", "нерасшифрованная строка локализации 0812 в приложении «Файлы»", "письмо mail_04_ltl", "глоссарий сборки (T07_GLOSSARY)")
+safe_facts = PackedStringArray()
+open_questions = PackedStringArray("Что означает аббревиатура — не установлено: ни одна локализация не содержит расшифровки.", "Кто и когда нанёс надпись — не установлено.", "Персонал утверждает обратное (mail_04_ltl: «Там нет такого текста в сборке»), тогда как надпись видна на уровне; кто прав — не установлено.", "Связь с other/universes.md не подтверждена: файла нет в проекте.")
+source_note = "Термин взят из ТЗ как обязательная отсылка. Внешнего источника канона в проекте нет, поэтому entry остаётся TODO: surfaces_in перечисляет только реальные места в сборке, safe_facts пуст, потому что расшифровки нет. В игре используется исключительно как неоднозначная надпись."

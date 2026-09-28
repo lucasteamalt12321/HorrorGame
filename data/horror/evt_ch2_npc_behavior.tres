@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch2_npc_behavior"
+kind = 6
+target = 7
+title = "NPC следит за камерой"
+min_tension = 2
+delay = 10
+duration = 2
+cooldown = 90
+subtitle = "Он смотрит на вас."
+sets_flag = &"met_unknown_npc"
+one_shot = true

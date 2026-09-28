@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EmailResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/email_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "mail_08_silence"
+kind = 0
+sender_name = "Менеджер проекта"
+sender_address = "manager@ninecircles.local"
+subject = " (без темы)"
+body = "QA-07?
+"
+chapter = 8
+requires_task_id = "T12_AVATAR"
+grants_flag = &"developers_stopped_replying"

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_NPC_WATCH"
+title = "NPC смотрит на камеру"
+description = "Штатный персонаж в саду останавливается и поворачивается к игроку. Он не реагирует на движение рядом и следит именно за камерой, пока её не отвернуть."
+category = 2
+severity = 4
+kind = 10
+location = "L1_GARDEN"
+level_index = 0
+min_chapter = 2
+photo_required = true
+report_required = true
+active_window = 25.0
+reaction_window = 14.0
+hint = "Смотрите на него в упор, не отводя камеру. Он выдерживает взгляд дольше, чем должен."
+observed_text = "look_target = camera вместо player."
+story_flag_on_report = &"npc_watched_player"

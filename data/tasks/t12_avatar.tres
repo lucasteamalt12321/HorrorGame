@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TaskResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/task_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "T12_AVATAR"
+title = "Копия тестировщика"
+description = "В игре есть персонаж, который повторяет вас. Руководитель не отвечает третье сообщение подряд. Проверьте L3_CLOCKWORK ещё раз."
+brief = "L3_CLOCKWORK: зафиксировать BUG_PLAYER_AVATAR"
+chapter = 8
+order = 12
+conditions = Array[Dictionary]([{"amount": 1, "kind": 0}])
+required_bug_ids = PackedStringArray("BUG_PLAYER_AVATAR")
+next_task_id = "T13_FINAL"
+sets_tension = 5
+hint = "Резко поверните влево, затем снимите экран. Фигура повторит движение с опозданием."

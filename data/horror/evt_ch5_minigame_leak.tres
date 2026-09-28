@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch5_minigame_leak"
+kind = 7
+target = 1
+title = "Объект из 2D-игры в офисе"
+min_tension = 3
+delay = 20
+duration = 0
+cooldown = 140
+prop_id = "leak_marker"
+one_shot = true

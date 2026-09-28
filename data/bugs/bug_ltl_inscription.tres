@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_LTL_INSCRIPTION"
+title = "Надпись, которой не должно быть"
+description = "В секторе сада на стене есть надпись из трёх букв. Она нанесена тем же шрифтом, что и интерфейс, но её нет ни в одном файле сборки, и она появляется только когда смотришь на неё прямо."
+category = 3
+severity = 5
+kind = 17
+location = "L1_GARDEN"
+level_index = 0
+min_chapter = 4
+required_flags = PackedStringArray("canon_term_seen")
+photo_required = true
+report_required = true
+active_window = 0.0
+reaction_window = 0.0
+hint = "Три буквы на стене за развилкой. Сфотографируйте прямо; снимок под углом не подойдёт — надпись исчезает."
+observed_text = "шрифт совпадает с UI, файл текстуры отсутствует в res://fonts."
+story_flag_on_report = &"found_ltl"

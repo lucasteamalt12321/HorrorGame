@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_UNPHOTOGRAPHABLE"
+title = "Аномалия вне кадра съёмки"
+description = "Камера возвращает пустой снимок при наведении на участок, который визуально ничем не отличается от остальных. Прибор подтверждает: снимок сделан, объекта в нём нет. Доказать это можно только журналом тестирования."
+category = 8
+severity = 4
+kind = 15
+location = "OFFICE"
+level_index = -1
+min_chapter = 4
+photo_required = false
+report_required = true
+active_window = 0.0
+reaction_window = 0.0
+hint = "Снимок не поможет. Откройте «Файлы сборки» → «Журнал»: строка [аномалия] — единственное доказательство."
+observed_text = "capture ok, target = null, region checksum совпадает с соседними."
+story_flag_on_report = &"game_noticed_player"

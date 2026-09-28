@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="EmailResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/email_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "mail_04_ltl"
+kind = 3
+sender_address = ""
+subject = "Re: Назначение · (без темы)"
+body = "Проверьте, что за надпись на стене в саду.
+
+Там нет такого текста в сборке. Я проверил все локализации.
+Возможно, это осталось от предыдущего проекта — тогда просто закройте тикет.
+
+Не фотографируйте это, если не хотите отправлять отчёт.
+"
+chapter = 4
+requires_task_id = "T07_GLOSSARY"
+grants_flag = &"ltl_mentioned_in_build"

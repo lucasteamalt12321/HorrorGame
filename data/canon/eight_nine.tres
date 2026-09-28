@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CanonEntryResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/canon_entry_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+term = "eight-nine"
+status = 0
+surfaces_in = PackedStringArray("глоссарий сборки (T07_GLOSSARY)")
+safe_facts = PackedStringArray()
+open_questions = PackedStringArray("Где строка должна встречаться в игре — не установлено: в баг-трекере, письмах mail_08_silence и счётчике кадров L3_CLOCKWORK её нет.", "Относится ли строка к версии сборки, к профилю или к чему-то ещё — не установлено.", "Происхождение написания не установлено.")
+source_note = "Термин из ТЗ. Проверка сборки показала: в игровых текстах строки нет ни разу, поэтому entry остаётся TODO с пустым safe_facts. Никаких утверждений об использовании термина делать нельзя, пока он реально не появится в контенте."

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TaskResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/task_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "T09_TEST_ROOM"
+title = "Уровень, которого нет в сборке"
+description = "В каталоге появился файл levels/TEST_ROOM.txt. Его нет в списке сборки, но он открывается. Дойдите до конца и опишите, что там."
+brief = "TEST_ROOM: дойти до финиша"
+chapter = 5
+order = 9
+conditions = Array[Dictionary]([{"amount": 0, "kind": 4}])
+target_level = 3
+next_task_id = "T10_OFFICE_REPORT"
+sets_tension = 4
+hint = "Выхода из уровня нет. Это не баг сборки — это уже ваша работа."

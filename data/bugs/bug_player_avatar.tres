@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_PLAYER_AVATAR"
+title = "В игре есть копия тестировщика"
+description = "На уровне появляется персонаж, повторяющий ваше движение с задержкой в один кадр. Он одет как вы и повторяет ваши ошибки, включая те, которые вы делали минуту назад."
+category = 2
+severity = 5
+kind = 16
+location = "L3_CLOCKWORK"
+level_index = 2
+min_chapter = 7
+photo_required = true
+report_required = true
+active_window = 20.0
+reaction_window = 12.0
+hint = "Встаньте и резко поверните влево, затем снимите экран. Фигура повторит движение с опозданием."
+observed_text = "реплика состояний с буфером 1 кадр, источник — не контроллер игрока."
+story_flag_on_report = &"player_avatar_seen"

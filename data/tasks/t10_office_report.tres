@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TaskResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/task_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "T10_OFFICE_REPORT"
+title = "Снять копию офиса"
+description = "Вы были правы: это ваше рабочее место. Сфотографируйте монитор, кружку и стул в TEST_ROOM и подайте отчёт как критический."
+brief = "TEST_ROOM: доказательства по BUG_TEST_ROOM"
+chapter = 6
+order = 10
+conditions = Array[Dictionary]([{"amount": 1, "kind": 0}])
+required_bug_ids = PackedStringArray("BUG_TEST_ROOM")
+next_task_id = "T11_LEAK"
+reply_email_id = "mail_06_test_room"
+sets_tension = 5
+hint = "Отчёт примет только тот кадр, где доказательство в кадре целиком."

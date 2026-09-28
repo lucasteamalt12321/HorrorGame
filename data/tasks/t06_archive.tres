@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TaskResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/task_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "T06_ARCHIVE"
+title = "Проверить архив снимков"
+description = "Из QA пришло требование: перед сдачей смены проверьте, что снимки сохраняются корректно. Откройте архив (Tab) и просмотрите последние кадры."
+brief = "Открыть архив снимков и просмотреть кадры"
+chapter = 3
+order = 6
+conditions = Array[Dictionary]([{"amount": 1, "kind": 5}])
+required_flag = &"photo_gallery_opened"
+next_task_id = "T07_GLOSSARY"
+sets_tension = 3
+hint = "Клавиша Tab открывает архив. Снимки никуда не записываются на диск — они живут в памяти до конца смены."

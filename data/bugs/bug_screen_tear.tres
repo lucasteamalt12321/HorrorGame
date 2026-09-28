@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_SCREEN_TEAR"
+title = "Разрывы изображения"
+description = "При переходе между секторами на экране появляются горизонтальные полосы разрыва. Полосы не исчезают, а накапливаются."
+category = 4
+severity = 3
+kind = 8
+location = "L1_GARDEN"
+level_index = 0
+min_chapter = 2
+photo_required = true
+report_required = true
+active_window = 6.0
+reaction_window = 5.0
+hint = "Фотографируйте монитор в момент разрывов: снимок ловит их лучше, чем глаз."
+observed_text = "torn_band не очищается между кадрами."

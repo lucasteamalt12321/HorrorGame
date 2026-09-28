@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EmailResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/email_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "mail_01_assignment"
+kind = 0
+sender_name = "Менеджер проекта"
+sender_address = "manager@ninecircles.local"
+subject = "Назначение · L1_GARDEN"
+body = "QA-07, добрый день.
+
+Первое назначение на сегодня: сектор сада, L1_GARDEN.
+Дойдите до конца уровня и зафиксируйте отклонения.
+
+Напоминаю: снимок без отчёта не считается работой.
+Отчёт оформляется в баг-трекере, поле «Комментарий» обязательно.
+Если снимок невозможен — вложите журнал.
+
+Спасибо.
+"
+chapter = 1
+requires_task_id = "T01_FIRST_CONTACT"

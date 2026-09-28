@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch9_2d_leak"
+kind = 7
+target = 1
+title = "Граница нарушена"
+min_tension = 5
+delay = 12
+duration = 0
+cooldown = 999
+prop_id = "avatar"
+sets_flag = &"boundary_breached"
+one_shot = true

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "amb_ch3_buzz"
+kind = 1
+target = 3
+title = "Фоновый гул"
+min_tension = 2
+max_tension = 4
+delay = 0
+duration = 0
+cooldown = 35
+audio_key = "glitch"
+audio_volume_db = -24
+one_shot = true

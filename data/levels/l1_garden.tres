@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="LevelResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/level_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "L1_GARDEN"
+display_name = "L1_GARDEN"
+scene_path = "res://minigame/minigame.tscn"
+width_tiles = 64
+height_tiles = 18
+kill_plane_y = 0.0
+spawn = Vector2(3, 12)
+goal_x = 60.0
+bug_ids = PackedStringArray("BUG_NPC_WALL", "BUG_SCREEN_TEAR", "BUG_NPC_WATCH", "BUG_HIDDEN_PASSAGE", "BUG_LTL_INSCRIPTION")
+collectible_total = 5
+is_secret = false
+chapter_min = 0
+build_note = "Сборка 0.7.13 · L1_GARDEN · проход разрешён"
+platforms = Array[Rect2]([Rect2(0, 14, 64, 4), Rect2(14, 11, 6, 3), Rect2(24, 12, 5, 2), Rect2(33, 9, 7, 5), Rect2(44, 11, 5, 3), Rect2(52, 8, 8, 6), Rect2(28, 6, 3, 8), Rect2(41, 5, 4, 3)])
+enemy_kinds = PackedStringArray("walker", "npc")
+enemy_positions = PackedVector2Array(18, 10, 46, 10)
+enemy_ranges = PackedFloat32Array(4.0, 0.0)
+pickup_positions = PackedVector2Array(9, 13, 28, 5, 36, 8, 50, 7, 58, 13)
+bug_trigger_zones = Array[Rect2]([Rect2(24, 8, 6, 6), Rect2(42, 6, 8, 6), Rect2(52, 5, 9, 4)])
+bug_trigger_ids = PackedStringArray("BUG_NPC_WALL", "BUG_LTL_INSCRIPTION", "BUG_NPC_WATCH")
+leak_marker = Vector2(0, 0)

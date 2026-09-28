@@ -11,12 +11,42 @@
 ## Паттерн «Менеджер»
 
 Каждый горизонтальный срез имеет менеджера-автозагрузчика или single-node:
-`GameManager`, `InteractionSystem`, `BugSystem`, `ReportSystem`, `TaskSystem`, `StoryFlags`, `SaveSystem`, `HorrorSystem`, `AudioManager`, `CameraSystem`.
+`GameManager`, `InteractionSystem`, `BugSystem`, `ReportSystem`, `TaskSystem`, `StoryFlags`, `SaveSystem`, `HorrorSystem`, `AudioManager`, `PhotoSystem`, `CameraSystem`, `ComputerSystem`, `MinigameSystem`, `DialogueSystem`, `Settings`, `StorySystem`, `CursorWatcher`.
 
 Общий профиль менеджера:
 - `class_name` + `extends Node`;
 - автозагрузка через `project.godot` (autoload) для систем доступа из любой сцены;
-- только своя ответственность; публичные методы вместо прямого доступа к нодам.
+- только своя ответственность; публичные методы вместо прямого доступа к нодам;
+- регистрация собственного состояния в `SaveSystem.register(id, self)` — снимок берётся из `get_save_state()`.
+
+Система, у которой нет состояния, не регистрируется в `SaveSystem` (`Settings`, `AudioManager`, `InteractionSystem`).
+
+## Паттерн «Director» (сборка уровня кодом)
+
+Контент и геометрия 100% процедурные, поэтому сцены описывают только каркас, а наполнение создаёт `Director`-скрипт, инстанцированный в сцене:
+
+- `scripts/office/office_director.gd` — документы, NPC, панель TEST_ROOM, второе рабочее место; состояние в `SaveSystem` под ключом `office`;
+- `minigame/game_director.gd` — геометрия 2D-уровня, зоны багов, пикапы.
+
+Правила директора:
+- `class_name` на скрипте директора, а не на нодах, которые он создаёт (иначе `.tscn` резолвится до регистрации класса);
+- созданные ноды — обычные `Node`/`Area3D`/`StaticBody3D` **без** собственного `class_name`, чтобы не плодить глобальные имена;
+- директор идемпотентен: `_built` guard, повторный `_ready()`/`_enter_tree()` не дублируют объекты;
+- директор подписывается на сигналы (`interact_performed`) и работает как источник подписки (sink).
+
+## Паттерн «Условие задачи» (condition_kind)
+
+`TaskSystem` не знает деталей условий — только их вид. Условия описаны в `data/tasks/*.tres` полем `condition_kind`:
+
+| `condition_kind` | Кто сообщает о выполнении | Как учитывается |
+|---|---|---|
+| `find_bug` | `BugSystem.appeared` / `reported` | счётчик по `required_bug_ids` |
+| `take_photo` | `PhotoSystem.photo_taken` | счётчик по `required_photo_ids` |
+| `read_documents` | `OfficeDirector` → `notify_document_read` | дедуп по `Dictionary` в `TaskSystem._documents_read` (persist) |
+| `talk_to` | `OfficeDirector` → `notify_npc_talk` | дедуп по id NPC, persist |
+| `enter_test_room` | `OfficeNpc` / `TestRoomDoor` → `notify_test_room_entered` | флаг `TaskSystem.test_room_found` (persist) |
+
+Правило: задача с `condition_kind`, не имеющим провайдера сигнала, **не** закрывается сама — она ждёт внешнего вызова. Задача переходит в следующую только один раз: `COMPLETED`-задачи защищены от реактивации, а `force_task()` существует исключительно для QA-тестов.
 
 ## Модель «вложение 2D-игры»
 
@@ -35,22 +65,100 @@ Monitor:
 ## Механика «Баг → Доказательство → Отчёт»
 
 1. `BugTrigger` (в 2D-сцене) сообщает `BugSystem: bug_appeared(id)`.
-2. Игрок делает фото → `CameraSystem` проверяет попадание объекта бага в кадр → `PhotoEvidence`.
-3. `evidence_ready` → игрок может оформить отчёт через `ReportSystem`.
-4. `ReportSystem` помечает баг, учёт ведёт `TaskSystem`.
+2. Игрок делает фото (действие `photo`) → `PhotoSystem` регистрирует `PhotoEvidence` для всех активных в кадре багов.
+3. `evidence_ready` → игрок может оформить отчёт через `ReportSystem` (в приложении `bug_tracker`).
+4. `ReportSystem` помечает баг как `reported`, отправляет ответ разработчика, учёт ведёт `TaskSystem`.
 5. Завершение цепочки заданий двигает сюжет (`StoryFlags`).
+
+`CameraSystem` — автозагрузчик рядом с `PhotoSystem`, но не внутри него: видоискатель меняет FOV камеры игрока, а `PhotoSystem` отвечает за снимок и evidence.
+
+- `camera_viewfinder` (ПКМ) переключает режим; FOV анимируется, look стабилизируется, при смене режима игры (`explore`/`computer`/`minigame`) режим сбрасывается, чтобы камера не осталась в неверном состоянии;
+- снимок (`photo`) работает и при поднятом видоискателе — иначе фото-гайд неиграбелен;
+- видимость бага определяется тем, что он объявлен активным в `BugSystem` в момент снимка.
 
 ## Хоррор-система
 
-- Шкала напряжения `TENSION_0..5` управляется `HorrorSystem`; события запускаются по `StoryFlags`, а не по «случайности».
-- События бывают: light, audio, object jump, text mutation, npc behavior, 2D-leak, off-screen events.
+- Шкала напряжения `TENSION_0..5` управляется `HorrorSystem`; события запускаются по `StoryFlags` и главам, а не по «случайности».
+- Типы событий: свет, звук, object jump, мутация текста, поведение NPC, 2D-leak, off-screen.
 - Все события контролируемые (правило: не ломать прохождение). Скримеры редкие.
+- `pause_watch()` — при паузе, открытом в главе ≥3, события `evt_pause_*` показывают аномалию в затемнённом оверлее. Право на аномалию выдаёт `CursorWatcher` (autoload), который слушает паузу и ставит флаг `saw_pause_anomaly`; `cursor_followed` выставляется только при нём — иначе флаг означал бы «где-то в игре случилось», а не «игрок это видел».
+- `AudioManager.set_tension(level)` перекрёстно микширует `music_calm` (база) / `music_tension` / `music_peak`. Частота `tension_drone` кэшируется в `_drone_hz` — пересборка буфера только при реальном изменении частоты.
 
 ## Паттерн данных
 
-- `BugResource` / `TaskResource` — `class_name … extends Resource` в `data/`.
-- Реестры: `BugDB` (грузит все `data/bugs/*.tres`), `TaskDB`.
-- Сохранение: `SaveSystem` пишет версионированный `Dictionary` (schema_version), устойчивый к миграциям.
+- Ресурсы: `BugResource`, `TaskResource`, `LevelResource`, `EmailResource`, `CanonEntryResource`, `HorrorEventResource` — `class_name … extends Resource` в `data/resources/`.
+- Контент лежит в `data/bugs/`, `data/tasks/`, `data/levels/`, `data/emails/`, `data/canon/`, `data/horror/` как `.tres`.
+- Реестры (`BugDB`, `TaskDB`, `LevelDB`, `EmailDB`, `CanonRegistry`) грузят каталоги лениво и кэшируют результат.
+- Сохранение: `SaveSystem` пишет версионированный `Dictionary` (`SCHEMA_VERSION`, сейчас 3), миграции — только в `migrate()`.
+- **Enum-поля в `.tres` сериализуются числами, `PackedVector2Array` — плоским списком компонентов.** Правка вручную ломает загрузку; контент генерируется кодом.
+
+## Паттерн «Непроверяемое не утверждается» (канон)
+
+Внешнего источника по лору нет, поэтому глоссарий канона — не источник правды, а реестр того, что игра **уже утверждает на экране**:
+
+- `Status.CONFIRMED` — факты, реально показанные игроку;
+- `Status.AMBIGUOUS` / `Status.TODO` — трактовки и догадки; в `safe_facts` им нельзя писать предположения.
+
+Инвариант: **`Status.TODO` ⇒ `safe_facts` пуст.** Нарушение ломает смысл всего глоссария — глоссарий напечатает догадку как факт, и это уже выдуманный лор.
+
+`CanonRegistry.validate()` возвращает список нарушений; `render_markdown()` печатает только `is_safe()`-факты. Smoke-тест вызывает `validate()` для всех записей, поэтому неверная запись падает в CI, а не в релиз.
+
+## Паттерн «Владелец применяет сам»
+
+Система, которая владеет ресурсом, применяет его сама по своему сигналу, а не ждёт, пока UI пересчитает своё же поле:
+
+- `Settings` на `settings_changed` сам ставит режим окна (`DisplayServer`) и масштаб интерфейса (`content_scale_factor`);
+- `MobileControls` на `settings_changed` сам скрывает/показывает touch-контролы;
+- `HorrorSystem` на `settings_changed` сам уважает `pause_anomaly_enabled`.
+
+Панель настроек отвечает только за чтение/запись значений. Любое другое место, меняющее настройку, тоже получает применение автоматически.
+
+## Паттерн «Ввод» (единый путь)
+
+Desktop-клавиатура и touch-кнопки не имеют отдельной логики. `ui/mobile/mobile_controls.gd` формирует `InputEventAction` с тем же action, что и клавиатура, и отправляет через `Input.parse_input_event()`:
+
+```
+клавиатура ─┐
+            ├→ InputMap action → scripts/game_root.gd → активная система
+touch-кнопка┘
+```
+
+Исключения, где так делать нельзя, обрабатываются явными гейтами: прыжок 2D-игры идёт через `minigame_jump`/`jump_requested`, а не через прямую запись `velocity`.
+
+## Паттерн «Ключ = тип значения в роутере»
+
+GDScript не приводит типы в `Dictionary`, поэтому поиск по ключу другого типа возвращает «не найдено» без ошибки. `DesktopShell` поэтому держит `APP_SCENES`/`APP_TITLES`/`APP_ICONS` по строковым app id (`"bugtracker"`, `"mail"`, …) — именно такие id приходят в `_on_app_changed(app_id)`, — а не по enum `ComputerSystem.App`. С enum-ключами окна всех пяти приложений не создавались, `Dictionary.has("bugtracker")` давал `false`, `_ensure_window()` выходил тихо, и ни один тест этого не показывал.
+
+Правило: **таблица, которую читает роутер, ключуется тем же типом, что роутер передаёт.** Неудачная загрузка сцены из такой таблицы — `push_error`, а не `return`.
+
+## Паттерн «Скрипт проверяется по своей сцене»
+
+`@onready`-пути вида `$VBox/Body/Left/...` пишутся на глаз и незаметно расходятся с иерархией `.tscn`: у `mail_app` и `files_app` был выдуманный узел `Split`, из-за чего `@onready` давал `Node not found`, а `mail_app._ready()` падал на `null.item_selected`.
+
+Правило: пути из скрипта сверяются с полными путями сцены того же базового имени; smoke открывает каждое окно, чтобы падение случилось в тесте, а не в релизной сборке.
+
+## Паттерн «Headless-тест»
+
+Два независимых прогона, оба в headless с фиктивным вводом:
+
+| Тест | Что покрывает | Ожидаемо |
+|---|---|---|
+| `tests/smoke.tscn` | системы, данные, офис, 2D-уровни, фото, галерея, канон, окна всех 5 приложений компьютера, save | 221/221, `RESULT: PASS` |
+| `tests/boot.tscn` | точка входа: меню → новая игра → офис, движение, компьютер | 24/24, `RESULT: PASS` |
+
+Принципы:
+
+- сцена монтируется как есть, системы-автозагрузки работают по-настоящему;
+- проверки вызывают публичные API систем и сигналы, а не приватные поля;
+- каждый чек инкрементирует счётчик, падение не прерывает прогон (все проблемы видны сразу);
+- внутренний watchdog 25 с, чтобы зависание не блокировало CI;
+- ожидаемый вывод: `N/N checks passed` + `RESULT: PASS` и код возврата 0.
+
+Тест, который переживает `change_scene_to_file`, держит драйвер в корне (`reparent` + `process_frame`), а не как ребёнка заменяемой сцены.
+
+Новые системы и сцены обязаны покрываться здесь, а не только вручную: сцена, ссылающаяся на несуществующий путь родителя, роняет узлы молча — ловятся только экспортом (`--export-pack` печатает `has vanished when instantiating`) и проверкой узлов в тесте.
+
+В headless клик мышью по `Button` не маршрутизируется, поэтому кнопки активируются через `ui_accept`. Это ограничение окружения, а не дефект проекта.
 
 ## Правило «не дублировать» (правило 4)
 

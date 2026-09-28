@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EmailResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/email_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "mail_10_final"
+kind = 0
+sender_name = "QA-Отдел"
+sender_address = "qa-dept@ninecircles.local"
+subject = "Сборка 0.7.13 ушла в релиз"
+body = "QA-07.
+
+Сборка 0.7.13 ушла в релиз. Ваша смена закрыта.
+
+Итог по отчётам: принято всё, кроме одного — того, который вы так и не отправили.
+
+Архив снимков будет очищен при перезагрузке. Если что-то нужно сохранить —
+сохраните это сейчас. Мы не храним снимки дольше, чем длится смена.
+"
+chapter = 10
+grants_flag = &"final_test_started"

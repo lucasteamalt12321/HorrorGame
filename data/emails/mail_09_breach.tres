@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EmailResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/email_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "mail_09_breach"
+kind = 3
+sender_address = ""
+subject = "про границу"
+body = "граница — это только соглашение
+вы её нарушили первым, когда продолжили тестировать
+"
+chapter = 9
+grants_flag = &"boundary_breached"

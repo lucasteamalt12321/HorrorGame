@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch4_text_mutation"
+kind = 5
+target = 5
+title = "Текст переписывается"
+min_tension = 3
+delay = 12
+duration = 0
+cooldown = 90
+text_id = "ltl"
+one_shot = true

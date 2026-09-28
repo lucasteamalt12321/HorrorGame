@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_SPAWN"
+title = "Объект появляется не в той точке"
+description = "Точка входа в тоннели смещена: первый чекпоинт появляется на два тайла ниже пола, из-за чего игрок начинает уровень с падения. Данные спавна не совпадают с геометрией."
+category = 3
+severity = 3
+kind = 5
+location = "L2_PIPES"
+level_index = 1
+min_chapter = 1
+photo_required = true
+report_required = true
+active_window = 0.0
+reaction_window = 0.0
+hint = "Снимите точку входа: разница видна по первой же попытке начать уровень."
+observed_text = "spawn = (3,15), платформа начинается с y=13."

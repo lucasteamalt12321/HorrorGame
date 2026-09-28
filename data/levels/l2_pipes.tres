@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="LevelResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/level_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "L2_PIPES"
+display_name = "L2_PIPES"
+scene_path = "res://minigame/minigame.tscn"
+width_tiles = 72
+height_tiles = 18
+kill_plane_y = 0.0
+spawn = Vector2(3, 12)
+goal_x = 68.0
+bug_ids = PackedStringArray("BUG_FLOAT", "BUG_SPAWN", "BUG_INVISIBLE_ENEMY")
+collectible_total = 5
+is_secret = false
+chapter_min = 1
+build_note = "L2_PIPES · техсектор · доступ для QA"
+platforms = Array[Rect2]([Rect2(0, 14, 20, 4), Rect2(16, 11, 5, 3), Rect2(25, 9, 6, 5), Rect2(31, 13, 10, 5), Rect2(41, 10, 5, 4), Rect2(48, 7, 7, 7), Rect2(55, 12, 17, 6), Rect2(36, 6, 5, 3), Rect2(60, 9, 4, 3)])
+enemy_kinds = PackedStringArray("flyer", "chaser", "walker")
+enemy_positions = PackedVector2Array(33, 12, 44, 9, 50, 6)
+enemy_ranges = PackedFloat32Array(5.0, 0.0, 3.0)
+pickup_positions = PackedVector2Array(8, 13, 26, 8, 37, 12, 53, 6, 66, 11)
+bug_trigger_zones = Array[Rect2]([Rect2(28, 6, 10, 8), Rect2(40, 5, 8, 8), Rect2(48, 4, 8, 8)])
+bug_trigger_ids = PackedStringArray("BUG_FLOAT", "BUG_SPAWN", "BUG_INVISIBLE_ENEMY")
+leak_marker = Vector2(58, 11)

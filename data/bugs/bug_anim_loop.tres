@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_ANIM_LOOP"
+title = "Анимация зациклена на одном кадре"
+description = "Стражник в часовом механизме замирает на одной позе: цикл анимации не перезапускается, спрайт не возвращается в начало. Выглядит как зависшая фигура."
+category = 1
+severity = 2
+kind = 4
+location = "L3_CLOCKWORK"
+level_index = 2
+min_chapter = 2
+photo_required = true
+report_required = true
+active_window = 20.0
+reaction_window = 12.0
+hint = "Замершая фигура в глубине сектора. Поза не меняется — это и есть признак."
+observed_text = "anim_frame не инкрементируется после 41."

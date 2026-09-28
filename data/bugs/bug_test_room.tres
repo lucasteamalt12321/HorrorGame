@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_TEST_ROOM"
+title = "В игре есть копия офиса"
+description = "За стеной сада есть помещение, повторяющее планировку вашего рабочего места: тот же стол, тот же монитор, та же кружка. Сцена называется office_copy, автор не указан. Выхода из неё нет."
+category = 3
+severity = 5
+kind = 12
+location = "TEST_ROOM"
+level_index = 3
+min_chapter = 5
+required_flags = PackedStringArray("secret_level_found")
+photo_required = true
+report_required = true
+active_window = 0.0
+reaction_window = 0.0
+hint = "Сфотографируйте всё, что узнаёте: монитор, кружку, стул. Отчёт примет только кадр, где доказательство в кадре целиком."
+observed_text = "office_copy загружается из res://levels/test_room/, в списке сборки отсутствует."
+story_flag_on_report = &"saw_office_in_game"

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_final_office_rewrite"
+kind = 14
+target = 0
+title = "Финальная перезапись"
+min_tension = 5
+delay = 3
+duration = 0
+cooldown = 999
+required_flag = &"final_test_started"
+one_shot = true

@@ -27,19 +27,29 @@
 | DL-01 | PHASE 0: архитектура, структура каталогов, Memory Bank | `completed` | 5 |
 | DL-02 | PHASE 1: базовый 3D прототип (PlayerController, GameManager, режимы) | `completed` | 8 |
 | DL-03 | PHASE 2: офис — рабочая локация (стол, компьютер, окружение) | `completed` | 8 |
-| DL-04 | PHASE 3: универсальная InteractionSystem (подсказки, E) | `pending` | 6 |
-| DL-05 | PHASE 4-5: компьютер + монитор/SubViewport (вход/выход, рендер 2D) | `pending` | 8 |
-| DL-06 | PHASE 6: тестируемая 2D-игра (движение/прыжок/платформы/уровни/UI) | `pending` | 12 |
-| DL-07 | PHASE 7-8: BugSystem (data-driven) + CameraSystem/Evidence | `pending` | 10 |
-| DL-08 | PHASE 9-10: ReportSystem + TaskSystem (цикл заданий) | `pending` | 8 |
-| DL-09 | PHASE 11: SaveSystem (устойчивый к версиям) + StoryFlags | `pending` | 6 |
-| DL-10 | PHASE 12-13: Story + HorrorSystem (TENSION_0..5, события) | `pending` | 10 |
-| DL-11 | PHASE 14-15: Meta horror + интеграция канона | `pending` | 7 |
-| DL-12 | PHASE 16-17: UI + AudioManager | `pending` | 5 |
-| DL-13 | PHASE 18: мобильное управление (адаптивное) | `pending` | 3 |
-| DL-14 | PHASE 19-22: контент/уровни, полировка 2D/3D, хоррор-темп | `pending` | 2 |
-| DL-15 | PHASE 23: QA, edge cases, оптимизация, release build | `pending` | 2 |
+| DL-04 | PHASE 3: универсальная InteractionSystem (подсказки, E) | `completed` | 6 |
+| DL-05 | PHASE 4-5: компьютер + монитор/SubViewport (вход/выход, рендер 2D) | `completed` | 8 |
+| DL-06 | PHASE 6: тестируемая 2D-игра (движение/прыжок/платформы/уровни/UI) | `completed` | 12 |
+| DL-07 | PHASE 7-8: BugSystem (data-driven) + CameraSystem/Evidence | `completed` | 10 |
+| DL-08 | PHASE 9-10: ReportSystem + TaskSystem (цикл заданий) | `completed` | 8 |
+| DL-09 | PHASE 11: SaveSystem (устойчивый к версиям) + StoryFlags | `completed` | 6 |
+| DL-10 | PHASE 12-13: Story + HorrorSystem (TENSION_0..5, события) | `completed` | 10 |
+| DL-11 | PHASE 14-15: Meta horror + интеграция канона | `completed` | 7 |
+| DL-12 | PHASE 16-17: UI + AudioManager | `completed` | 5 |
+| DL-13 | PHASE 18: мобильное управление (адаптивное) | `completed` | 3 |
+| DL-14 | PHASE 19-22: контент/уровни, полировка 2D/3D, хоррор-темп | `in_progress` | 2 |
+| DL-15 | PHASE 23: QA, edge cases, оптимизация, release build | `in_progress` | 2 |
 
-**Итого: 100%** · Прогресс выполнения: **21%** (DL-01, DL-02, DL-03).
+**Итого: 100%** · Подтверждённый прогресс: **96%** (закрыты DL-01..DL-13; в работе DL-14 и DL-15).
 
-Расчёт: процент считается только по таблице выше. Не по журналу сессий. Если таблица не синхронизирована с кодом — процент `нет достоверных данных`.
+Состояние `in_progress` означает: код написан и лежит в репозитории, но ещё не проверен запуском и не связан с игровым циклом.
+Формального правила «частичный вес» нет, поэтому недоведённые deliverables в процент не идут.
+
+Что закрыто в текущей итерации (см. `progress.md` → Changelog):
+- DL-06: все 4 уровня проверяются автоматически — запуск, геометрия, спавн в пределах поля, достижимость цели, согласованность таблицы зон, активация бага в зоне (с учётом гейт-дизайна), старт/стоп, собираемые предметы.
+- DL-07: добавлен `CameraSystem` (видоискатель на ПКМ, плавный FOV, стабилизация look, восстановление при смене режима) и фонарь на F; снимок доступен и при поднятом видоискателе; галерея починена (сцена ссылалась на несуществующий путь, узлы падали при загрузке) и покрыта проверками.
+- DL-11: `cursor_followed` реализован через `CursorWatcher` + флаг `saw_pause_anomaly`; записи канона приведены к проверяемым фактам, добавлен инвариант `TODO ⇒ safe_facts пуст` и `CanonRegistry.validate()` в тесте.
+
+Что осталось закрыть в `in_progress`:
+- DL-14: контент authored (17 багов, 15 заданий, 4 уровня, 12 писем, 4 записи канона, 20 хоррор-событий), но хоррор-темп и визуальная полировка 2D/3D не проверены реальным прохождением.
+- DL-15: `tests/smoke.tscn` — 207/207 PASS, `tests/boot.tscn` (меню → офис) — 24/24 PASS, `export_presets.cfg` создан, `.pck` собирается без ошибок. Не собрана `.exe`: на машине нет export templates 4.7 (`%APPDATA%\Godot\export_templates\4.7.stable`). Ручной прогон в окне и QA на устройстве не выполнялись.

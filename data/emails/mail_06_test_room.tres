@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EmailResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/email_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "mail_06_test_room"
+kind = 0
+sender_name = "Менеджер проекта"
+sender_address = "manager@ninecircles.local"
+subject = "Re: Назначение · L3_CLOCKWORK"
+body = "Ваш отчёт принят как критический.
+
+Собрал команду. Собрание через час.
+
+До собрания прошу не трогать папку reports и не переносить файлы из каталога сборки.
+Если заметите что-то ещё — просто опишите в отчёте, не перемещая файлы.
+
+Спасибо за работу сегодня.
+"
+chapter = 6
+requires_task_id = "T10_OFFICE_REPORT"

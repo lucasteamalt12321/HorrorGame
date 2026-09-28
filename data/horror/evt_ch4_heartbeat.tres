@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch4_heartbeat"
+kind = 1
+target = 1
+title = "Сердцебиение"
+min_tension = 3
+delay = 8
+duration = 3
+cooldown = 50
+audio_key = "heartbeat"
+audio_volume_db = -8
+one_shot = true

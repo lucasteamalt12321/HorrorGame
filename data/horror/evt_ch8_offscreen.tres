@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch8_offscreen"
+kind = 8
+target = 1
+title = "Движение вне кадра"
+min_tension = 5
+delay = 9
+duration = 0.6
+cooldown = 40
+audio_key = "whisper"
+audio_volume_db = -10
+one_shot = true

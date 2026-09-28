@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="EmailResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/email_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "mail_00_welcome"
+kind = 0
+sender_name = "QA-Отдел"
+sender_address = "qa-dept@ninecircles.local"
+subject = "Смена 1 · QA-07 · сборка 0.7.13"
+body = "Добро пожаловать на смену.
+
+Профиль: QA-07. Сборка: 0.7.13. Проект: NINE CIRCLES.
+Рабочее место проверено, компьютер исправен, кружка на месте.
+
+Порядок работы:
+1. Получить назначение.
+2. Пройти назначенный сектор.
+3. Зафиксировать всё, что выглядит неправильно: снимок плюс отчёт в баг-трекере.
+4. Вернуться за следующим назначением.
+
+Если аномалию нельзя снять камерой — приложите журнал тестирования.
+Отчёты, отправленные мимо баг-трекера, не принимаются.
+
+Смена длится, пока вы не закроете её сами.
+"
+chapter = 0
+grants_flag = &"intro_seen"
+read_by_default = false

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="TaskResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/task_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "T14_ENDING"
+title = "Смена закрыта"
+description = "Отчёт принят. Смены больше нет — есть только архив, в котором снимки хранятся в памяти до перезагрузки."
+brief = ""
+chapter = 10
+order = 14
+grants_flag = PackedStringArray("ending_reached")
+auto_complete = true
+sets_tension = 0

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TaskResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/task_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "T07_GLOSSARY"
+title = "Собрать глоссарий"
+description = "Термины, которые всплывают в игре, не описаны ни в одном документе проекта. Откройте вкладку «Глоссарий» в приложении «Заметки» и внесите всё, что найдёте."
+brief = "Заметки → Глоссарий: изучить неподтверждённые термины"
+chapter = 4
+order = 7
+conditions = Array[Dictionary]([{"amount": 1, "kind": 5}])
+required_flag = &"canon_term_seen"
+next_task_id = "T08_QUESTION"
+reply_email_id = "mail_04_ltl"
+sets_tension = 3
+hint = "Три термина. Ни один не подтверждён — в этом и смысл. Отметьте их как вопросы, а не как факты."

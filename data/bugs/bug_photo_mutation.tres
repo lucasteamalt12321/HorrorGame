@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_PHOTO_MUTATION"
+title = "Снимок меняется после просмотра"
+description = "Сделанный снимок не остаётся тем, чем был. После того как вы открыли архив и вернулись к нему, в кадре появилась фигура, которой не было при съёмке. Время на снимке не совпадает с вашим."
+category = 6
+severity = 5
+kind = 14
+location = "PHOTO"
+level_index = -1
+min_chapter = 3
+required_flags = PackedStringArray("photo_gallery_opened")
+photo_required = true
+report_required = true
+active_window = 0.0
+reaction_window = 0.0
+hint = "Откройте архив (Tab) и посмотрите на снимок, который вы сделали раньше. Сравните снимок с тем, что вы помните."
+observed_text = "в img добавлен объект класса player_silhouette, mtime изображения — позже исходного."
+story_flag_on_report = &"photo_changed"

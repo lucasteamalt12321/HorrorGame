@@ -1,0 +1,118 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/computer/apps/notes_app.gd" id="1"]
+
+[node name="NotesApp" type="PanelContainer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Header" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ЗАМЕТКИ ТЕСТИРОВЩИКА"
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
+
+[node name="Close" type="Button" parent="VBox/Header"]
+layout_mode = 2
+text = "X"
+theme_override_font_sizes/font_size = 6
+
+[node name="Body" type="VBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Tabs" type="TabContainer" parent="VBox/Body"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 6
+
+[node name="Task" type="Control" parent="VBox/Body/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Box" type="VBoxContainer" parent="VBox/Body/Tabs/Task"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="Title" type="Label" parent="VBox/Body/Tabs/Task/Box"]
+layout_mode = 2
+text = "Назначений нет"
+theme_override_font_sizes/font_size = 6
+theme_override_colors/font_color = Color(1, 0.9, 0.6, 1)
+autowrap_mode = 2
+
+[node name="Text" type="RichTextLabel" parent="VBox/Body/Tabs/Task/Box"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_active = true
+theme_override_font_sizes/normal_font_size = 6
+
+[node name="Build" type="Control" parent="VBox/Body/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Box" type="VBoxContainer" parent="VBox/Body/Tabs/Build"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="Row" type="HBoxContainer" parent="VBox/Body/Tabs/Build/Box"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Scroll" type="ScrollContainer" parent="VBox/Body/Tabs/Build/Box/Row"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Levels" type="ItemList" parent="VBox/Body/Tabs/Build/Box/Row/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 6
+
+[node name="Note" type="RichTextLabel" parent="VBox/Body/Tabs/Build/Box"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+bbcode_enabled = true
+theme_override_font_sizes/normal_font_size = 6
+autowrap_mode = 2
+
+[node name="Glossary" type="Control" parent="VBox/Body/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Text" type="RichTextLabel" parent="VBox/Body/Tabs/Glossary"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+scroll_active = true
+theme_override_font_sizes/normal_font_size = 6

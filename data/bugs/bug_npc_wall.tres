@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_NPC_WALL"
+title = "NPC проходит сквозь стену"
+description = "Патрульный охранник на перекрёстке сада продолжает движение по прямой, игнорируя коллизию со стеной сектора. Он проходит насквозь и возвращается обратно, будто стены нет."
+category = 0
+severity = 3
+kind = 1
+location = "L1_GARDEN"
+level_index = 0
+min_chapter = 1
+photo_required = true
+report_required = true
+active_window = 12.0
+reaction_window = 8.0
+hint = "Зона сбоя — развилка у стены. Дождитесь, пока патруль войдёт в неё, и снимите."
+observed_text = "Охранник вошёл в стену на 14 кадров."
+reply_email_id = "mail_01_reply"
+story_flag_on_report = &"first_bug_reported"

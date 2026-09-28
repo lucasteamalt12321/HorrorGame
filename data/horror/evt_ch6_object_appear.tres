@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch6_object_appear"
+kind = 3
+target = 1
+title = "Предмет появляется"
+min_tension = 4
+delay = 14
+duration = 0
+cooldown = 110
+prop_id = "leak_marker"
+one_shot = true

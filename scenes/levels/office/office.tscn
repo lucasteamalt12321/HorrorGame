@@ -1,4 +1,7 @@
-[gd_scene load_steps=46 format=3]
+[gd_scene load_steps=48 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/game/computer/computer.tscn" id="1_computer"]
+[ext_resource type="Script" path="res://scripts/office/office_director.gd" id="2_director"]
 
 [sub_resource type="Environment" id="Environment_office"]
 background_mode = 1
@@ -312,29 +315,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -1.2)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DeskBody"]
 shape = SubResource("BoxShape_desk")
 
-[node name="Monitor" type="Node3D" parent="."]
+[node name="Computer" parent="." instance=ExtResource("1_computer")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.805, -1.6)
-
-[node name="Body" type="MeshInstance3D" parent="Monitor"]
-material_override = SubResource("Material_monitor")
-mesh = SubResource("BoxMesh_monitor_body")
-
-[node name="Screen" type="MeshInstance3D" parent="Monitor"]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -0.071)
-material_override = SubResource("Material_screen")
-mesh = SubResource("PlaneMesh_screen")
-
-[node name="Stand" type="MeshInstance3D" parent="Monitor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.63, 0)
-material_override = SubResource("Material_monitor")
-mesh = SubResource("BoxMesh_monitor_stand")
-
-[node name="Base" type="MeshInstance3D" parent="Monitor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8, 0)
-material_override = SubResource("Material_monitor")
-mesh = SubResource("BoxMesh_monitor_base")
+screen_size = Vector2i(400, 250)
+power_on = true
+startup_power = true
 
 [node name="DeskLamp" type="OmniLight3D" parent="."]
+groups = ["office_light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, -1.6)
 light_color = Color(0.75, 0.85, 1, 1)
 light_energy = 1.6
@@ -499,13 +487,18 @@ material_override = SubResource("Material_plant")
 mesh = SubResource("BoxMesh_plant_leaves")
 
 [node name="CeilingLight" type="OmniLight3D" parent="."]
+groups = ["office_light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0, 0)
 light_color = Color(1, 0.95, 0.9, 1)
 light_energy = 2.4
 shadow_enabled = true
 omni_range = 12.0
 
+[node name="Director" type="Node3D" parent="."]
+script = ExtResource("2_director")
+
 [node name="WindowLight" type="DirectionalLight3D" parent="."]
+groups = ["office_light"]
 transform = Transform3D(-0.5, 0.7, 0.5, 0, 0.577, 0.816, -0.866, 0.408, -0.289, -6, 3, 1.5)
 light_color = Color(0.7, 0.8, 1, 1)
 light_energy = 0.8

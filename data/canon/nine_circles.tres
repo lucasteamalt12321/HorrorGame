@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CanonEntryResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/canon_entry_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+term = "Nine Circles"
+status = 0
+surfaces_in = PackedStringArray("подпись «Проект: NINE CIRCLES» на главном меню", "домен писем ninecircles.local в восьми письмах (mail_00…mail_10)", "заголовок окна на мониторе «NINE CIRCLES — сборка 0.7.13» (desktop.gd, files_app.gd)", "глоссарий сборки (T07_GLOSSARY)")
+safe_facts = PackedStringArray()
+open_questions = PackedStringArray("Совпадает ли название сюжета с названием реального проекта — не установлено.", "Почему выбран именно этот домен и номер сборки 0.7.13 — не установлено.")
+source_note = "Рабочее название тестируемой сборки. Все перечисленные места проверены в коде. Домен ninecircles.local встречается в восьми письмах; сетевого обмена в проекте нет вообще (HTTPRequest/HTTPClient/сокетов в коде нет), письма существуют только как данные. Это утверждение о сборке, а не о каноне, поэтому в safe_facts не вынесено. entry остаётся TODO."

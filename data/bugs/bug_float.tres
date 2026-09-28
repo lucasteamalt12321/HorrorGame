@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_FLOAT"
+title = "Предмет зависает вне коллизий"
+description = "Сборщик данных в технических тоннелях не падает на площадку: он остаётся висеть в воздухе на высоте прыжка, хотя опора под ним есть. Проверка коллизий не выполняется."
+category = 0
+severity = 2
+kind = 2
+location = "L2_PIPES"
+level_index = 1
+min_chapter = 1
+photo_required = true
+report_required = true
+active_window = 0.0
+reaction_window = 0.0
+hint = "Не нужно прыгать — просто посмотрите на предмет и снимите его с того места, где он висит."
+observed_text = "y_offset не сбрасывается при пересечении поверхности."
+reply_email_id = "mail_01_reply"

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EmailResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/email_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "mail_05_watch"
+kind = 3
+sender_address = ""
+subject = ""
+body = "вы читаете это чаще, чем отвечаете
+"
+chapter = 5
+requires_task_id = "T08_QUESTION"
+grants_flag = &"canon_question_sent"

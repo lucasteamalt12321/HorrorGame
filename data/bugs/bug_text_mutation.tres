@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_TEXT_MUTATION"
+title = "Текст уровня переписывает сам себя"
+description = "Подписи в игре подменяются. Строка, которая при первом запуске читалась как описание сектора, во втором содержит другое предложение — и меняется при каждом открытии."
+category = 5
+severity = 2
+kind = 9
+location = "L3_CLOCKWORK"
+level_index = 2
+min_chapter = 3
+photo_required = true
+report_required = true
+active_window = 0.0
+reaction_window = 0.0
+hint = "Откройте «Файлы сборки» и сравните long_english.txt с тем, что написано в игре."
+observed_text = "localisation key 0812 меняет значение при повторном чтении."
+reply_email_id = "mail_03_photo"

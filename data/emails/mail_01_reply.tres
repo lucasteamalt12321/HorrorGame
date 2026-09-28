@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EmailResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/email_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "mail_01_reply"
+kind = 0
+sender_name = "Менеджер проекта"
+sender_address = "manager@ninecircles.local"
+subject = "Re: Назначение · L1_GARDEN"
+body = "Отчёт принят, спасибо.
+
+Классификация, которую вы выбрали, верная — коллизия действительно не запечена.
+Я передал это в разработку. Номер тикета выдадут позже, напишу.
+
+Пока рекомендация прежняя: не закрывайте приложения во время тестирования.
+Если окно ведёт себя неправильно — просто продолжайте работу.
+
+Следующий сектор вы получите автоматически.
+"
+chapter = 1
+requires_task_id = "T02_FINISH_GARDEN"
+grants_flag = &"first_reply_received"

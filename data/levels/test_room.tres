@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="LevelResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/level_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "TEST_ROOM"
+display_name = "TEST_ROOM"
+scene_path = "res://minigame/minigame.tscn"
+width_tiles = 24
+height_tiles = 16
+kill_plane_y = 0.0
+spawn = Vector2(3, 12)
+goal_x = 20.0
+bug_ids = PackedStringArray("BUG_TEST_ROOM")
+collectible_total = 1
+is_secret = true
+chapter_min = 4
+build_note = ""
+platforms = Array[Rect2]([Rect2(0, 13, 24, 3), Rect2(8, 10, 4, 3), Rect2(14, 8, 4, 5)])
+enemy_kinds = PackedStringArray("npc")
+enemy_positions = PackedVector2Array(16, 7)
+enemy_ranges = PackedFloat32Array(0.0)
+pickup_positions = PackedVector2Array(6, 12)
+bug_trigger_zones = Array[Rect2]([Rect2(4, 6, 16, 8)])
+bug_trigger_ids = PackedStringArray("BUG_TEST_ROOM")
+leak_marker = Vector2(12, 9)

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch3_photo_mutation"
+kind = 11
+target = 5
+title = "Снимки изменились"
+min_tension = 2
+delay = 4
+duration = 0
+cooldown = 120
+required_flag = &"photo_gallery_opened"
+sets_flag = &"photo_changed"
+one_shot = true

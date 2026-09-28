@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_OFFICE_LEAK"
+title = "Объект из 2D-игры попал в офис"
+description = "Предмет, который существует только внутри игры на мониторе, оказался на вашем столе в офисе. Модель не соответствует ни одному ассету сборки, и на неё нельзя сослаться как на свою."
+category = 6
+severity = 5
+kind = 13
+location = "OFFICE"
+level_index = -1
+min_chapter = 6
+photo_required = true
+report_required = true
+active_window = 0.0
+reaction_window = 0.0
+hint = "Снимите предмет на столе. Он появляется не сразу: сначала найдите его маркер на уровне."
+observed_text = "res://objects/leak_marker.png не существует в сборке."
+story_flag_on_report = &"leaked_object_in_office"

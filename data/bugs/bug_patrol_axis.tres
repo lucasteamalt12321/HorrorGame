@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="BugResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/bug_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "BUG_PATROL_AXIS"
+title = "Патруль идёт по неверной оси"
+description = "Охранник в часовом механизме патрулирует не вдоль платформы, а поперёк неё: он застревает на краю и продолжает шагать в стену, пока игрок не снимет его."
+category = 2
+severity = 3
+kind = 3
+location = "L3_CLOCKWORK"
+level_index = 2
+min_chapter = 2
+photo_required = true
+report_required = true
+active_window = 15.0
+reaction_window = 10.0
+hint = "Охранник на шестерне. Патруль испорчен именно там, где ось поворота не совпадает с осью платформы."
+observed_text = "patrol_axis = (0,1) — ожидалось (1,0)."

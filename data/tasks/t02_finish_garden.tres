@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TaskResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/task_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "T02_FINISH_GARDEN"
+title = "Пройти сад до конца"
+description = "Отчёт принят. Доведите L1_GARDEN до финиша: дойдите до флага в правом конце сектора."
+brief = "L1_GARDEN: дойти до флага"
+chapter = 1
+order = 2
+conditions = Array[Dictionary]([{"amount": 0, "kind": 2}])
+target_level = 0
+next_task_id = "T03_PIPES"
+reply_email_id = "mail_02_npc"
+sets_tension = 1
+hint = "Флаг стоит у последней платформы справа. Собирайте данные — на них влияет процент прохождения."

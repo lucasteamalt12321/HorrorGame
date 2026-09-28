@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch1_offscreen_step"
+kind = 8
+target = 1
+title = "Шаг за спиной"
+min_tension = 1
+delay = 22
+duration = 0.5
+cooldown = 70
+audio_key = "whisper"
+audio_volume_db = -16
+one_shot = true

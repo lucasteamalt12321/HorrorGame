@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch1_light_flicker"
+kind = 0
+target = 0
+title = "Мигает свет"
+min_tension = 1
+delay = 6
+duration = 1.4
+cooldown = 45
+audio_key = "glitch"
+audio_volume_db = -12
+one_shot = true

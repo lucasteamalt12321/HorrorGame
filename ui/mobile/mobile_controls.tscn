@@ -77,6 +77,63 @@ offset_bottom = 105.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxKnob")
 
+[node name="PhotoButton" type="Button" parent="."]
+layout_mode = 0
+anchors_preset = 15
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -152.0
+offset_top = -272.0
+offset_right = -32.0
+offset_bottom = -152.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 0
+theme_override_styles/normal = SubResource("StyleBoxJump")
+theme_override_styles/hover = SubResource("StyleBoxJump")
+theme_override_styles/pressed = SubResource("StyleBoxJumpPressed")
+theme_override_font_sizes/font_size = 18
+text = "PHOTO"
+
+[node name="InteractButton" type="Button" parent="."]
+layout_mode = 0
+anchors_preset = 15
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -152.0
+offset_top = -392.0
+offset_right = -32.0
+offset_bottom = -272.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 0
+theme_override_styles/normal = SubResource("StyleBoxJump")
+theme_override_styles/hover = SubResource("StyleBoxJump")
+theme_override_styles/pressed = SubResource("StyleBoxJumpPressed")
+theme_override_font_sizes/font_size = 20
+text = "E"
+
+[node name="PauseButton" type="Button" parent="."]
+layout_mode = 0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -112.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = 112.0
+grow_horizontal = 0
+mouse_filter = 0
+theme_override_styles/normal = SubResource("StyleBoxJump")
+theme_override_styles/hover = SubResource("StyleBoxJump")
+theme_override_styles/pressed = SubResource("StyleBoxJumpPressed")
+theme_override_font_sizes/font_size = 18
+text = "||"
+
 [node name="JumpButton" type="Button" parent="."]
 layout_mode = 0
 anchors_preset = 15
@@ -96,5 +153,3 @@ theme_override_styles/hover = SubResource("StyleBoxJump")
 theme_override_styles/pressed = SubResource("StyleBoxJumpPressed")
 theme_override_font_sizes/font_size = 20
 text = "JUMP"
-
-[connection signal="pressed" from="JumpButton" to="." method="_on_jump_button_pressed"]

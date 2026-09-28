@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="HorrorEventResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/resources/horror_event_resource.gd" id="1_res"]
+
+[resource]
+script = ExtResource("1_res")
+id = "evt_ch2_object_jump"
+kind = 4
+target = 1
+title = "Предмет перескакивает"
+min_tension = 2
+delay = 18
+duration = 0.4
+cooldown = 75
+prop_id = "mug"
+one_shot = true
