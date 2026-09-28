@@ -90,6 +90,22 @@ func _hud_visibility(value: bool) -> void:
 		hud.visible = value
 
 
+func _input(event: InputEvent) -> void:
+	# The desktop lives inside the monitor's SubViewport, and the engine does not
+	# route root viewport input into a 3D-embedded SubViewport on its own. Every
+	# mouse event is offered to the screen mesh first; only the ones that land on
+	# the screen are consumed, so the pause menu and the gallery keep working.
+	if not GameManager.is_in_computer():
+		return
+	if not (event is InputEventMouse):
+		return
+	var mon := ComputerSystem.get_monitor()
+	if mon == null or not mon.has_method("route_input"):
+		return
+	if bool(mon.call("route_input", event)):
+		get_viewport().set_input_as_handled()
+
+
 # --- global input -----------------------------------------------------------
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -122,7 +122,14 @@ func close_app() -> void:
 ## entirely when the desktop itself is what is showing. Keeps a single rule for
 ## "back" no matter which screen the player is on.
 func close_top() -> void:
-	if not is_active or is_booting():
+	if not is_active:
+		return
+	# Sitting down must never feel like a dead key: the first Esc during the boot
+	# animation skips the animation instead of being swallowed, the second one
+	# leaves the machine.
+	if is_booting():
+		_boot_remaining = 0.0
+		AudioManager.play_computer("confirm")
 		return
 	if current_app == App.GAME and MinigameSystem.is_game_running():
 		MinigameSystem.force_stop("player_exit")

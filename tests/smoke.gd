@@ -137,6 +137,7 @@ func _run() -> void:
 		_check("%s window opens" % ComputerSystem.current_app_id(), win != null)
 		if pair[0] == ComputerSystem.App.BUGTRACKER:
 			tracker = win
+		_check_reachable_by_pointer(win, "%s window controls answer the mouse" % pair[1])
 		ComputerSystem.close_app()
 		await get_tree().process_frame
 	_check("back on the desktop after closing apps",
@@ -518,6 +519,87 @@ func _open_app_window(app_id: int, group: String) -> Node:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	return get_tree().get_first_node_in_group(group)
+
+
+## Walks a window with real pointer motion and checks that every control the
+## player has to press is actually the thing under the cursor.
+##
+## The app suite opens windows with a keyboard shortcut, which hides a whole
+## class of bug: in Godot a full-rect Control above a Button shadows it, so the
+## window opens fine and looks perfect while none of its buttons react to a
+## click. `mouse_filter` on every layout container has to stay IGNORE, and this
+## is what proves it.
+func _check_reachable_by_pointer(win: Node, label: String) -> void:
+	if win == null:
+		return
+	var sv := _subviewport_above(win)
+	if sv == null:
+		_check(label, false, "no SubViewport above the window")
+		return
+	# A window fades in and its containers sort themselves, so rects are still
+	# empty for a frame or two after it opens.
+	for i in 6:
+		await get_tree().process_frame
+	var bounds := Rect2(Vector2.ZERO, Vector2(sv.size))
+	var blocked: Array[String] = []
+	var collapsed: Array[String] = []
+	for control in _clickable_controls(win):
+		if not control.is_visible_in_tree():
+			continue
+		var rect := control.get_global_rect()
+		if rect.size.x <= 1.0 or rect.size.y <= 1.0:
+			collapsed.append(str(control.name))
+			continue
+		var center := rect.get_center()
+		if not bounds.has_point(center) or _clipped_out(control, center):
+			continue
+		var motion := InputEventMouseMotion.new()
+		motion.position = center
+		motion.global_position = center
+		sv.push_input(motion, true)
+		await get_tree().process_frame
+		var hovered := sv.gui_get_hovered_control()
+		if hovered != control and not control.is_ancestor_of(hovered):
+			blocked.append("%s(%s)" % [control.name, hovered.name if hovered != null else "nothing"])
+	if not collapsed.is_empty():
+		_log.append("  note  %s has collapsed controls: %s" % [label, ", ".join(collapsed)])
+	_check(label, blocked.is_empty(), ", ".join(blocked))
+
+
+## Whether `point` falls outside a clipping ancestor of `control`, in which case
+## the player cannot reach it no matter how the hit test is wired.
+func _clipped_out(control: Control, point: Vector2) -> bool:
+	var n: Node = control.get_parent()
+	while n != null:
+		var c := n as Control
+		if c != null and c.clip_contents and not c.get_global_rect().has_point(point):
+			return true
+		n = n.get_parent()
+	return false
+
+
+## The SubViewport an in-world control is rendered in, if any.
+func _subviewport_above(node: Node) -> SubViewport:
+	var n: Node = node
+	while n != null:
+		if n is SubViewport:
+			return n as SubViewport
+		n = n.get_parent()
+	return null
+
+
+## Every control in `root` that a player clicks or types into.
+func _clickable_controls(root: Node) -> Array[Control]:
+	var found: Array[Control] = []
+	var pending: Array[Node] = [root]
+	while not pending.is_empty():
+		var node: Node = pending.pop_back()
+		if node is BaseButton or node is LineEdit or node is ItemList \
+				or node is Tree or node is Slider or node is TabBar:
+			found.append(node as Control)
+		for child in node.get_children():
+			pending.append(child)
+	return found
 
 func _find_leaked(director: OfficeDirector) -> Node:
 	if director == null:

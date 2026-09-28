@@ -43,7 +43,7 @@ const APP_ICONS := {
 
 var _windows: Dictionary = {}
 var _toast_time: float = 0.0
-var _boot_time: float = 0.0
+var _boot_dots: float = 0.0
 
 
 func _ready() -> void:
@@ -108,12 +108,14 @@ func _refresh_status() -> void:
 
 
 func _process(delta: float) -> void:
-	if _boot_time > 0.0:
-		_boot_time -= delta
-		var dots := ".".repeat(1 + int(_boot_time * 3.0) % 3)
+	# ComputerSystem owns the length of the boot; the desktop only shows it. Two
+	# independent timers used to drift apart, and for a moment the boot screen was
+	# gone while the system still refused to open anything, or the other way round.
+	boot_overlay.visible = ComputerSystem.is_booting()
+	if boot_overlay.visible:
+		_boot_dots += delta
+		var dots := ".".repeat(1 + int(_boot_dots * 3.0) % 3)
 		boot_label.text = "QA-STATION 01\nPOST ...\nЗагрузка профиля тестировщика%s" % dots
-		if _boot_time <= 0.0:
-			boot_overlay.visible = false
 	if _toast_time > 0.0:
 		_toast_time -= delta
 		if _toast_time <= 0.0:
@@ -141,16 +143,14 @@ func launch_game() -> void:
 
 
 func _on_enter(_computer: Node3D) -> void:
-	_boot_time = 1.4
-	boot_overlay.visible = true
+	_boot_dots = 0.0
 	show_toast("Сессия восстановлена")
 	_refresh_icons()
 
 
 func _on_exit() -> void:
 	_close_all_windows()
-	_boot_time = 0.0
-	boot_overlay.visible = false
+	_boot_dots = 0.0
 	toast.text = ""
 
 
@@ -209,13 +209,3 @@ func show_toast(text: String, duration: float = 2.4) -> void:
 
 func _on_line(text: String, _source: String) -> void:
 	show_toast(text, 3.0)
-
-
-# --- input ------------------------------------------------------------------
-
-func _unhandled_input(event: InputEvent) -> void:
-	if not ComputerSystem.is_active:
-		return
-	if event.is_action_pressed("ui_cancel"):
-		ComputerSystem.close_app()
-		get_viewport().set_input_as_handled()
