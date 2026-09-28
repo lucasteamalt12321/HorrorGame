@@ -4,7 +4,7 @@
 
 - **Текущая итерация:** ИТЕРАЦИЯ 5 (QA, canon-аудит, настройки, release) — завершена и закоммичена как `3e96600`; проверки: smoke 226/226, boot 34/34, экспорт PCK без warning.
 - **Прогресс по Project Deliverables:** 96% (см. `projectbrief.md`; 96 = 100 − 4 из `in_progress` DL-14, DL-15).
-- **Last checked commit:** `c3ef0c3` (HEAD; рабочая копия содержит незакоммиченный фикс ввода в компьютер — см. Changelog)
+- **Last checked commit:** `58f9fa2` (HEAD; рабочая копия чистая)
 
 ## Что сделано до этого контекста (git history)
 
