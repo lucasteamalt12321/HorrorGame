@@ -32,10 +32,12 @@
 ```powershell
 # импорт ресурсов и регистрация class_name
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --editor --quit
-# системы и данные: 221 проверок
+# системы и данные: 226 проверок
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" res://tests/smoke.tscn
-# точка входа: главное меню → новая игра → офис: 24 проверки
+# точка входа: главное меню → новая игра → офис → компьютер: 34 проверки
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" res://tests/boot.tscn
 ```
 
 Оба теста печатают `RESULT: PASS` и вызывают `quit(0)`; ненулевой код возврата означает провал.
+
+`boot.tscn` проверяет компьютер так, как им пользуется игрок: подойти, нажать E, дождаться загрузки, кликнуть по иконке мышью и выйти по ESC. Клик идёт через `Input.parse_input_event` — тот же путь, что у настоящего указателя; `Viewport.push_input` кормит только локальный GUI и никогда не доходит до `_input` узлов, поэтому для интеграционных проверок он не годится.

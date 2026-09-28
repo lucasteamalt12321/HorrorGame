@@ -52,4 +52,4 @@
 
 Что осталось закрыть в `in_progress`:
 - DL-14: контент authored (17 багов, 15 заданий, 4 уровня, 12 писем, 4 записи канона, 20 хоррор-событий), но хоррор-темп и визуальная полировка 2D/3D не проверены реальным прохождением.
-- DL-15: `tests/smoke.tscn` — 207/207 PASS, `tests/boot.tscn` (меню → офис) — 24/24 PASS, `export_presets.cfg` создан, `.pck` собирается без ошибок. Не собрана `.exe`: на машине нет export templates 4.7 (`%APPDATA%\Godot\export_templates\4.7.stable`). Ручной прогон в окне и QA на устройстве не выполнялись.
+- DL-15: `tests/smoke.tscn` — 226/226 PASS, `tests/boot.tscn` (меню → офис → компьютер с кликом и ESC) — 34/34 PASS, `export_presets.cfg` создан, `.pck` собирается без ошибок. Не собрана `.exe`: на машине нет export templates 4.7 (`%APPDATA%\Godot\export_templates\4.7.stable`). Ручной прогон в окне и QA на устройстве не выполнялись.

@@ -74,16 +74,16 @@
 # 1. Импорт + регистрация class_name (после новых скриптов)
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --editor --quit
 
-# 2. Системы, данные, уровни, галерея, канон (ожидается "221/221 checks passed" + "RESULT: PASS")
+# 2. Системы, данные, уровни, галерея, канон (ожидается "226/226 checks passed" + "RESULT: PASS")
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" res://tests/smoke.tscn
 
-# 3. Точка входа: меню → офис (ожидается "24/24 checks passed" + "RESULT: PASS")
+# 3. Точка входа: меню → офис → компьютер (ожидается "34/34 checks passed" + "RESULT: PASS")
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" res://tests/boot.tscn
 ```
 
 - У обоих тестов внутренний watchdog 25 с; внешний timeout в CI — 60 с (smoke) и 60 с (boot).
 - При принудительном выходе headless печатается warning о `AudioStreamWAV`/`AudioStreamPlaybackWAV` в кэше сессии — не регрессия, подтверждено `--verbose`.
-- В headless клик мышью по `Button` не маршрутизируется; кнопки в тестах активируются через `ui_accept`.
+- Мышь в headless работает, если событие подаётся через `Input.parse_input_event`; `Viewport.push_input` до `_input` узлов не доходит (только локальный GUI). Координаты задаются в пикселях окна — движок применяет трансформ content-scale, который в headless равен `окно / 1280` (напр. 0.05 при окне 64×64). Указатель в headless устроен как настоящий, поэтому клики проверяются по всей цепочке.
 
 ## Сборка и релиз
 

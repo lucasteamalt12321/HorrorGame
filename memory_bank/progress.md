@@ -2,9 +2,9 @@
 
 ## Статус
 
-- **Текущая итерация:** ИТЕРАЦИЯ 5 (QA, canon-аудит, настройки, release) — завершена и закоммичена как `3e96600`; проверки: smoke 221/221, boot 24/24, экспорт PCK без warning.
+- **Текущая итерация:** ИТЕРАЦИЯ 5 (QA, canon-аудит, настройки, release) — завершена и закоммичена как `3e96600`; проверки: smoke 226/226, boot 34/34, экспорт PCK без warning.
 - **Прогресс по Project Deliverables:** 96% (см. `projectbrief.md`; 96 = 100 − 4 из `in_progress` DL-14, DL-15).
-- **Last checked commit:** `3e96600` (HEAD; рабочая копия чистая)
+- **Last checked commit:** `c3ef0c3` (HEAD; рабочая копия содержит незакоммиченный фикс ввода в компьютер — см. Changelog)
 
 ## Что сделано до этого контекста (git history)
 
@@ -17,6 +17,7 @@
 - `1fa4558`..`48c633f` — размеры и масштаб стола/монитора в test_room.
 - `a4740ea`..`67aaf93` — PHASE 2: офисная локация, синхронизация MB/docs.
 - `3e96600` — ИТЕРАЦИИ 4-5: 17 autoload-систем, контент (90 `.tres`), 2D-игра, компьютер, фото, хоррор, тесты (221/221, 24/24), export-пресет, docs/MB. 209 файлов, +13688/−381.
+- `c3ef0c3` — синхронизация Memory Bank и docs после `3e96600`; запушено в `origin/main`.
 
 ## Изменения ИТЕРАЦИИ 1 (сделано)
 
@@ -122,6 +123,7 @@ Release:
 - [x] Битые `$`-пути в `mail_app.gd` и `files_app.gd` — исправлены, мёртвый `log_list` удалён.
 - [x] `report_opened` без потребителя — подключён в баг-трекере, поведение покрыто тестом.
 - [x] `player_model.obj` не используется — удалён вместе с `.import`.
+- [x] **Спавн-комната была неуправляема** (жалоба игрока: «только ходить по ней»): мышь не доходила до рабочего стола (Godot не передаёт события из корневого `Viewport` в 3D-встроенный `SubViewport` — добавлен явный маршрут через `GameRoot._input` и `Computer.route_input()`); полноэкранный `WindowLayer` с `mouse_filter = PASS` затенял иконки (`PASS` не пропускает событие вниз) — переведён в `IGNORE`; первое ESC во время загрузки глоталось `close_top()` при двух рассинхронённых таймерах загрузки — `ComputerSystem.is_booting()` сделан единственным источником, первый ESC пропускает анимацию, второй выходит. Покрыто boot-тестом 34/34 и проверкой достижимости кнопок в smoke 226/226.
 
 Открытые:
 
@@ -152,6 +154,7 @@ Release:
 | 2026-09-28 | ИТЕРАЦИЯ 5, часть 7: `export_presets.cfg` + чистый `.pck`; найдена и исправлена сломанная `gallery.tscn`/`gallery.gd` | `export_presets.cfg`, `.gitignore`, `ui/photo/gallery.{gd,tscn}` |
 | 2026-09-28 | ИТЕРАЦИЯ 5, часть 8: синхронизация docs и Memory Bank, deliverables 67% → 96% | `docs/*`, `memory_bank/*` |
 | 2026-09-28 | ИТЕРАЦИЯ 5, часть 9: **баг-релиз-блокер** — окна приложений компьютера не создавались (`APP_SCENES` ключуется enum'ом, роутер передаёт строки); битые `$`-пути в `mail_app.gd` и `files_app.gd`; трекер показывает тред отчёта при повторном выборе; `report_opened` подключён; удалён `player_model.obj`; `AudioManager.shutdown()`; рабочий watchdog в `boot.gd`; smoke 221/221 | `ui/computer/desktop.gd`, `ui/computer/apps/mail_app.gd`, `ui/computer/apps/files_app.gd`, `ui/computer/apps/bug_tracker.gd`, `systems/audio/audio_manager.gd`, `tests/*` |
+| 2026-09-28 | ИТЕРАЦИЯ 5, часть 10: **мышь на 3D-мониторе** (жалоба «в спавн-комнате ничего не работает») — явный маршрут `GameRoot._input` → `ComputerSystem.get_monitor().route_input()` → экранный quad → `ScreenViewport.push_input()`; маппинг по AABB вместо фиксированных осей; `WindowLayer`/`Taskbar`/подписи → `mouse_filter = IGNORE` (иначе затеняли кнопки); первый ESC пропускает boot, `is_booting()` — единственный источник; boot 24 → 34 проверки через настоящие события ввода, smoke 221 → 226 (достижимость кнопок мышью) | `scenes/game/computer/computer.gd`, `scripts/game_root.gd`, `systems/computer/computer_system.gd`, `ui/computer/desktop.{gd,tscn}`, `tests/boot.gd`, `tests/smoke.gd`, `docs/*`, `memory_bank/*` |
 
 ## Проверка
 
@@ -159,10 +162,10 @@ Release:
 # Импорт/регистрация class_name (обязательно после новых скриптов)
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --editor --quit
 
-# Системы, данные, уровни, галерея, канон (ожидается 221/221, RESULT: PASS)
+# Системы, данные, уровни, галерея, канон (ожидается 226/226, RESULT: PASS)
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" res://tests/smoke.tscn
 
-# Точка входа: главное меню → новая игра → офис (ожидается 24/24, RESULT: PASS)
+# Точка входа: главное меню → новая игра → офис → компьютер (ожидается 34/34, RESULT: PASS)
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" res://tests/boot.tscn
 
 # Сборка: .pck собирается без templates, .exe требует export templates 4.7
