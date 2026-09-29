@@ -4,7 +4,7 @@
 
 - **Текущая итерация:** ИТЕРАЦИЯ 5 (QA, canon-аудит, настройки, release) — завершена и закоммичена как `3e96600`; проверки: smoke 226/226, boot 34/34, экспорт PCK без warning.
 - **Прогресс по Project Deliverables:** 96% (см. `projectbrief.md`; 96 = 100 − 4 из `in_progress` DL-14, DL-15 и `blocked` DL-16).
-- **Last checked commit:** `6763ea2` (код, проверенный в этой сессии: smoke 226/226, boot 34/34, PCK, распознавание Android-пресета).
+- **Last checked commit:** `af315e2` (Android-пресет; проверено smoke 226/226, boot 34/34, PCK, распознавание Android-пресета).
 
 ## Что сделано до этого контекста (git history)
 
