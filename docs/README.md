@@ -19,13 +19,42 @@
 
 ## Сборка релиза
 
-Пресет `Windows Desktop` лежит в `export_presets.cfg`, результат — `build/windows/HorrorGame.exe`.
+Пресеты лежат в `export_presets.cfg`: `Windows Desktop` → `build/windows/HorrorGame.exe`, `Android` → `build/android/HorrorGame.apk`.
 
 ```powershell
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --export-release "Windows Desktop" build/windows/HorrorGame.exe
+& "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --export-release "Android" build/android/HorrorGame.apk
 ```
 
 Требуются export templates версии 4.7 (`%APPDATA%\Godot\export_templates\4.7.stable`); без них Godot собирает только `.pck` через `--export-pack`.
+
+### Android
+
+Пресет `Android` — universal APK, подписанный debug-кеystore (`package/signed=true`), устанавливается через `adb install` без дополнительной обвязки.
+
+| Параметр | Значение | Почему |
+|---|---|---|
+| Архитектуры | `armeabi-v7a`, `arm64-v8a`, `x86`, `x86_64` | один APK ставится на любой телефон, планшет и эмулятор |
+| Gradle build | выключен | используются готовые шаблоны 4.7; сборка не требует NDK |
+| Ориентация | `Sensor Landscape` (`display/window/handheld/orientation=4`) | обе альбомные ориентации; рендер — GL Compatibility, тянется через `canvas_items` + `expand` |
+| Экран | `immersive_mode` + `edge_to_edge`, все размеры (`small`..`xlarge`) | не зависит от вырезов, динамиков и соотношения сторон |
+| Текстуры | `etc2_astc` + `s3tc_bptc` | ETC2/ASTC есть на любом GLES3-устройстве |
+| Иконки | `res://icon.svg` → main + adaptive foreground + monochrome | одинаковая иконка в любом launcher, тематическая на Android 13+ |
+| Разрешения | только `custom_permissions` (пусто) | игра полностью офлайн |
+
+Сторонние зависимости для сборки (Godot Settings → Export → Android):
+
+1. **export templates 4.7** — `%APPDATA%\Godot\export_templates\4.7.stable` (`android_debug.apk`, `android_release.apk`).
+2. **Java SDK 17+** — путь в *Java SDK Path*.
+3. **Android SDK** с `platform-tools` (есть `adb`) и `build-tools` (`apksigner`) — путь в *Android SDK Path*.
+4. Сборка идёт **только на ПК**. `git pull` на телефоне синхронизирует код, но Godot 4.7 Android Editor экспериментальный и не заменяет ПК-сборку.
+
+Установка и лог краша:
+
+```powershell
+& "C:\Android\platform-tools\adb.exe" install -r build/android/HorrorGame.apk
+& "C:\Android\platform-tools\adb.exe" logcat -s godot:V
+```
 
 ## Проверка проекта
 

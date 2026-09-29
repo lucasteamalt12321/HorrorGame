@@ -38,9 +38,10 @@
 | DL-12 | PHASE 16-17: UI + AudioManager | `completed` | 5 |
 | DL-13 | PHASE 18: мобильное управление (адаптивное) | `completed` | 3 |
 | DL-14 | PHASE 19-22: контент/уровни, полировка 2D/3D, хоррор-темп | `in_progress` | 2 |
-| DL-15 | PHASE 23: QA, edge cases, оптимизация, release build | `in_progress` | 2 |
+| DL-15 | PHASE 23: QA, edge cases, оптимизация, release build (Windows) | `in_progress` | 1 |
+| DL-16 | PHASE 23: release build (Android, universal APK) + QA на устройстве | `blocked` | 1 |
 
-**Итого: 100%** · Подтверждённый прогресс: **96%** (закрыты DL-01..DL-13; в работе DL-14 и DL-15).
+**Итого: 100%** · Подтверждённый прогресс: **96%** (закрыты DL-01..DL-13; в работе DL-14 и DL-15, DL-16 заблокирован внешними зависимостями).
 
 Состояние `in_progress` означает: код написан и лежит в репозитории, но ещё не проверен запуском и не связан с игровым циклом.
 Формального правила «частичный вес» нет, поэтому недоведённые deliverables в процент не идут.
@@ -53,3 +54,7 @@
 Что осталось закрыть в `in_progress`:
 - DL-14: контент authored (17 багов, 15 заданий, 4 уровня, 12 писем, 4 записи канона, 20 хоррор-событий), но хоррор-темп и визуальная полировка 2D/3D не проверены реальным прохождением.
 - DL-15: `tests/smoke.tscn` — 226/226 PASS, `tests/boot.tscn` (меню → офис → компьютер с кликом и ESC) — 34/34 PASS, `export_presets.cfg` создан, `.pck` собирается без ошибок. Не собрана `.exe`: на машине нет export templates 4.7 (`%APPDATA%\Godot\export_templates\4.7.stable`). Ручной прогон в окне и QA на устройстве не выполнялись.
+
+Что закрыто в `DL-16`:
+- Пресет `Android` добавлен и валиден: universal APK (`armeabi-v7a`/`arm64-v8a`/`x86`/`x86_64`), без Gradle-сборки, GL Compatibility, `Sensor Landscape`, `immersive` + `edge-to-edge`, все размеры экрана, ETC2/ASTC, иконки из `res://icon.svg`, ноль разрешений, подпись debug-keystore. Ориентация вынесена в проектную настройку `display/window/handheld/orientation=4`.
+- `--export-release "Android"` доходит до проверки зависимостей — значит пресет узнаётся движком; падение даёт только отсутствие templates, JDK и Android SDK `build-tools`. Это внешний блокер, а не ошибка пресета.

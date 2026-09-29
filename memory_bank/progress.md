@@ -3,8 +3,8 @@
 ## Статус
 
 - **Текущая итерация:** ИТЕРАЦИЯ 5 (QA, canon-аудит, настройки, release) — завершена и закоммичена как `3e96600`; проверки: smoke 226/226, boot 34/34, экспорт PCK без warning.
-- **Прогресс по Project Deliverables:** 96% (см. `projectbrief.md`; 96 = 100 − 4 из `in_progress` DL-14, DL-15).
-- **Last checked commit:** `58f9fa2` (HEAD; рабочая копия чистая)
+- **Прогресс по Project Deliverables:** 96% (см. `projectbrief.md`; 96 = 100 − 4 из `in_progress` DL-14, DL-15 и `blocked` DL-16).
+- **Last checked commit:** `6763ea2` (код, проверенный в этой сессии: smoke 226/226, boot 34/34, PCK, распознавание Android-пресета).
 
 ## Что сделано до этого контекста (git history)
 
@@ -18,6 +18,9 @@
 - `a4740ea`..`67aaf93` — PHASE 2: офисная локация, синхронизация MB/docs.
 - `3e96600` — ИТЕРАЦИИ 4-5: 17 autoload-систем, контент (90 `.tres`), 2D-игра, компьютер, фото, хоррор, тесты (221/221, 24/24), export-пресет, docs/MB. 209 файлов, +13688/−381.
 - `c3ef0c3` — синхронизация Memory Bank и docs после `3e96600`; запушено в `origin/main`.
+- `c93275f` — мышь на 3D-мониторе: маршрут ввода, `mouse_filter`, ESC при загрузке.
+- `58f9fa2` — docs/Memory Bank под `c93275f`; smoke 226/226, boot 34/34.
+- `6763ea2` — `last_checked_commit` → `58f9fa2`.
 
 ## Изменения ИТЕРАЦИИ 1 (сделано)
 
@@ -106,6 +109,24 @@ Release:
 
 Документация: синхронизированы `docs/README.md`, `docs/ARCHITECTURE.md`, `memory_bank/*` (автолоады 15 → 17, действия 13, `camera_viewfinder` реализован, тесты 207/24, инвариант канона, сборка релиза).
 
+## Android-пресет (сделано)
+
+- `export_presets.cfg` — добавлен пресет `Android`, результат `build/android/HorrorGame.apk`:
+  - архитектуры `armeabi-v7a`, `arm64-v8a`, `x86`, `x86_64` — один APK ставится на любой телефон, планшет и эмулятор;
+  - `gradle_build/use_gradle_build=false` — используются готовые templates 4.7, NDK не нужен, меньше мест для отказа;
+  - `package/unique_name="com.lucasteamalt12321.horrorgame"`, `package/signed=true` (debug-keystore → `adb install -r` работает сразу), `package/app_category=1`, `package/show_in_app_library=true`;
+  - `screen/immersive_mode=true`, `screen/edge_to_edge=true`, `screen/support_{small,normal,large,xlarge}=true`, `screen/background_color` = clear color проекта;
+  - `splash_screen/disable_godot_boot_splash=true` — совпадает с `boot_splash/show_image=false`, Godot-логотип не показывается;
+  - `launcher_icons/main_192x192`, `adaptive_foreground_432x432`, `adaptive_monochrome_432x432` из `res://icon.svg`; `adaptive_background_432x432` пуст;
+  - `texture_format/etc2_astc=true` + `s3tc_bptc=true` — текстуры читаются на любом GLES3-устройстве;
+  - `permissions/custom_permissions` пуст — игра полностью офлайн, никаких разрешений;
+  - `keystore/*` пуст, `version/code=1`, `version/name="0.1.0"`, `gradle_build/min_sdk="24"`, `target_sdk="35"`.
+- `project.godot` — добавлено `window/handheld/orientation=4` (`Sensor Landscape`). В 4.7 ориентации больше нет в пресете, она только проектная настройка; значение `4` соответствует `Sensor Landscape` (enum: 0 Landscape … 4 Sensor Landscape, 5 Sensor Portrait, 6 Sensor). Портрет не используется: офис и 2D-игра в мониторе рассчитаны на альбом.
+- Мобильный ввод не дублировался: `input_devices/pointing/emulate_mouse_from_touch` по умолчанию `true`, touch эмулирует мышь, поэтому работают и джойстик/кнопки `mobile_controls`, и все `Button` 2D-игры в мониторе. `keep_screen_on` по умолчанию `true`.
+- Восстановлена секция `[debug]` в `project.godot` (`gdscript/warnings/unsafe_* = 0`): редактор при пересохранении проекта её выкинул, глобальные настройки проекта она не знает.
+- Проверка: `--export-release "Android" <tmp>.apk` — движок узнаёт пресет и доходит до проверки зависимостей, отказ только про export templates, Java SDK и Android SDK `build-tools`. Регрессий нет: `--headless --editor --quit` чистый, smoke 226/226, boot 34/34, `--export-pack` → `build/windows/HorrorGame.pck` 461 200 Б без warning.
+- Блокер сборки: на машине только `C:\Android\platform-tools\adb.exe`; нет JDK, `build-tools`, platforms и export templates 4.7. Пресет не может быть проверен на устройстве, пока они не установлены.
+
 ## Known Issues
 
 Решённые ранее (закрыты в ИТЕРАЦИИ 4-5):
@@ -128,6 +149,8 @@ Release:
 Открытые:
 
 - [ ] `.exe` не собирается: нет export templates 4.7 в `%APPDATA%\Godot\export_templates\4.7.stable`. Нужен `tpz` для 4.7.stable (≈1 GB) либо оформление сборки на стороне CI/машины разработчика. **Внешний блокер.**
+- [ ] `.apk` не собирается: пресет `Android` валиден, но нет export templates (`android_debug.apk`, `android_release.apk`), Java SDK 17+ и Android SDK `build-tools` c `apksigner`. Есть только `C:\Android\platform-tools`. **Внешний блокер (DL-16).**
+- [ ] Мобильный краш «Новая смена» на телефоне не подтверждён и не опровергнут: игрок запускал старый клон `D:\GodotProjects\horror-game` (`67aaf93`), он синхронизирован до актуального HEAD, но APK не собирался. Свежую сборку на устройстве не прогоняли; при повторении — `adb logcat`.
 - [ ] 12 (smoke) / 18 (boot) объектов `AudioStreamPlaybackWAV` в warnings при принудительном выходе из headless. Проверено экспериментом: `AudioManager.shutdown()` (остановка голосов, обнуление `stream`, чистка `_stream_cache`) плюс 3 кадра перед `quit()` не меняют число — объекты удерживает `AudioServer`, а не проект, и освобождаются только при обработке аудиопотока. Для игры и для тестов безвредно, из GDScript не лечится.
 - [ ] Ручной прогон в окне не выполнялся: хоррор-темп, читаемость UI, звук и ощущение от 3D-офиса не проверены человеком. Это последнее, что закрывает DL-14.
 - [ ] Нет QA на физическом мобильном устройстве (клавиатура/touch отправляет тот же action, но safe-area и тач-таргеты вживую не проверены).
@@ -155,6 +178,7 @@ Release:
 | 2026-09-28 | ИТЕРАЦИЯ 5, часть 8: синхронизация docs и Memory Bank, deliverables 67% → 96% | `docs/*`, `memory_bank/*` |
 | 2026-09-28 | ИТЕРАЦИЯ 5, часть 9: **баг-релиз-блокер** — окна приложений компьютера не создавались (`APP_SCENES` ключуется enum'ом, роутер передаёт строки); битые `$`-пути в `mail_app.gd` и `files_app.gd`; трекер показывает тред отчёта при повторном выборе; `report_opened` подключён; удалён `player_model.obj`; `AudioManager.shutdown()`; рабочий watchdog в `boot.gd`; smoke 221/221 | `ui/computer/desktop.gd`, `ui/computer/apps/mail_app.gd`, `ui/computer/apps/files_app.gd`, `ui/computer/apps/bug_tracker.gd`, `systems/audio/audio_manager.gd`, `tests/*` |
 | 2026-09-28 | ИТЕРАЦИЯ 5, часть 10: **мышь на 3D-мониторе** (жалоба «в спавн-комнате ничего не работает») — явный маршрут `GameRoot._input` → `ComputerSystem.get_monitor().route_input()` → экранный quad → `ScreenViewport.push_input()`; маппинг по AABB вместо фиксированных осей; `WindowLayer`/`Taskbar`/подписи → `mouse_filter = IGNORE` (иначе затеняли кнопки); первый ESC пропускает boot, `is_booting()` — единственный источник; boot 24 → 34 проверки через настоящие события ввода, smoke 221 → 226 (достижимость кнопок мышью) | `scenes/game/computer/computer.gd`, `scripts/game_root.gd`, `systems/computer/computer_system.gd`, `ui/computer/desktop.{gd,tscn}`, `tests/boot.gd`, `tests/smoke.gd`, `docs/*`, `memory_bank/*` |
+| 2026-09-29 | ИТЕРАЦИЯ 5, часть 11: **Android-пресет** — universal APK (4 архитектуры, без Gradle), подпись debug-keystore, immersive + edge-to-edge, все размеры экрана, ETC2/ASTC, иконки из `icon.svg`, ноль разрешений; `Sensor Landscape` вынесен в `project.godot` (`window/handheld/orientation=4`), т.к. в 4.7 ориентации нет в пресете; восстановлена секция `[debug]` в `project.godot`; DL-15 2 → 1, добавлен DL-16 (1, `blocked` по внешним зависимостям) | `export_presets.cfg`, `project.godot`, `docs/README.md`, `docs/ARCHITECTURE.md`, `memory_bank/*` |
 
 ## Проверка
 
@@ -168,10 +192,13 @@ Release:
 # Точка входа: главное меню → новая игра → офис → компьютер (ожидается 34/34, RESULT: PASS)
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" res://tests/boot.tscn
 
-# Сборка: .pck собирается без templates, .exe требует export templates 4.7
+# Сборка: .pck собирается без templates, .exe и .apk требуют export templates 4.7 (+ JDK и Android SDK)
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --export-pack "Windows Desktop" build/windows/HorrorGame.pck
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --export-release "Windows Desktop" build/windows/HorrorGame.exe
+& "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --export-release "Android" build/android/HorrorGame.apk
 ```
+
+Проверка Android-пресета без зависимостей: запустить последнюю команду и убедиться, что пресет узнан (иначе `Unknown export preset`), а в ошибках только templates/JDK/SDK.
 
 ## Чек-лист завершения сессии
 

@@ -15,12 +15,9 @@ config/description="3D psychological horror meta-game. The player is a game test
 config/version="0.1.0"
 run/main_scene="res://ui/menus/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://icon.svg"
-boot_splash/show_image=false
 boot_splash/bg_color=Color(0.02, 0.02, 0.03, 1)
-
-[audio]
-
+boot_splash/show_image=false
+config/icon="res://icon.svg"
 
 [autoload]
 
@@ -42,18 +39,19 @@ HorrorSystem="*res://systems/horror/horror_system.gd"
 StorySystem="*res://systems/story/story_system.gd"
 CursorWatcher="*res://systems/story/cursor_watcher.gd"
 
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/handheld/orientation=4
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
 [debug]
 
 gdscript/warnings/unsafe_property_access=0
 gdscript/warnings/unsafe_method_access=0
 gdscript/warnings/unsafe_cast=0
-
-[display]
-
-window/size/viewport_width=1280
-window/size/viewport_height=720
-window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
 
 [input]
 
@@ -89,7 +87,7 @@ interact={
 }
 photo={
 "deadzone": 0.5,
-"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":false,"double_click":false,"script":null)
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":false,"double_click":false,"script":null)
 ]
 }
 pause={
@@ -112,7 +110,7 @@ gallery={
 }
 camera_viewfinder={
 "deadzone": 0.5,
-"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":2,"canceled":false,"pressed":false,"double_click":false,"script":null)
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":2,"canceled":false,"pressed":false,"double_click":false,"script":null)
 ]
 }
 flashlight={
@@ -141,9 +139,9 @@ objective_toggle={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-textures/canvas_textures/default_texture_filter=0
 anti_aliasing/quality/msaa_3d=1
 environment/defaults/default_clear_color=Color(0.015, 0.015, 0.02, 1)

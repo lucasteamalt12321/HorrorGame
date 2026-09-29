@@ -8,7 +8,7 @@
 - **Виндовый драйвер:** `d3d12` (`rendering_device/driver.windows="d3d12"`) — переопределён только для Windows.
 - **Физика:** Jolt Physics (`3d/physics_engine="Jolt Physics"`).
 - **Аудио:** без бинарных файлов — все SFX/музыка синтезируются в рантайме (`AudioStreamWAV`, 44.1 кГц, 16-бит).
-- **Платформы:** desktop (Windows) + мобильная поддержка через touch-контролы (UI), рычаги в `mobile_controls`.
+- **Платформы:** Windows (релиз) + Android (релиз) + мобильное управление через touch-контролы (UI, джойстик, кнопки) с безопасной зоной.
 - **Версия проекта:** `config/version="0.1.0"`, `config/name="HorrorGame"`.
 - **Контент:** 100% процедурный (17 багов, 15 заданий, 4 уровня, 12 писем, 4 записи канона, 20 хоррор-событий). Внешние ассеты: только `player_model.obj` (не используется).
 
@@ -87,7 +87,15 @@
 
 ## Сборка и релиз
 
-- Пресет `Windows Desktop` в `export_presets.cfg`: x86_64, GL Compatibility, `export_filter="all_resources"`, `exclude_filter="tests/*, docs/*, memory_bank/*"`, выход `build/windows/HorrorGame.exe`, версия `0.1.0`.
-- `/build/` в `.gitignore` — артефакты сборки не коммитятся.
-- `--export-pack` работает без дополнительных зависимостей: `build/windows/HorrorGame.pck` (~0.44 MB), 0 warning.
-- `--export-release` **требует export templates 4.7** в `%APPDATA%\Godot\export_templates\4.7.stable` (файлы `windows_debug_x86_64.exe` и `windows_release_x86_64.exe`). На текущей машине их нет — установка `tpz` (≈1 GB) или CI со скачиванием шаблонов.
+- Пресеты в `export_presets.cfg`:
+  - `Windows Desktop` — x86_64, GL Compatibility, `export_filter="all_resources"`, `exclude_filter="tests/*, docs/*, memory_bank/*"`, выход `build/windows/HorrorGame.exe`, версия `0.1.0`.
+  - `Android` — universal APK, `build/android/HorrorGame.apk`. Архитектуры `armeabi-v7a`/`arm64-v8a`/`x86`/`x86_64`, `gradle_build/use_gradle_build=false` (готовые templates, NDK не нужен), `package/signed=true` (debug-keystore → ставится через `adb install`), `package/unique_name="com.lucasteamalt12321.horrorgame"`, `package/app_category=1`, `version/code=1`, `version/name="0.1.0"`, `screen/immersive_mode=true`, `screen/edge_to_edge=true`, `screen/support_{small,normal,large,xlarge}=true`, `screen/background_color` = clear color проекта, `splash_screen/disable_godot_boot_splash=true` (совпадает с `boot_splash/show_image=false`), `launcher_icons/*` из `res://icon.svg` (adaptive background пуст), `texture_format/{s3tc_bptc,etc2_astc}=true`, `permissions/custom_permissions` пуст, `keystore/*` пуст.
+- Ориентация — проектная настройка, в 4.7 в пресете её нет: `display/window/handheld/orientation=4` в `project.godot` = `Sensor Landscape` (enum: 0 Landscape, 1 Portrait, 2 Reverse Landscape, 3 Reverse Portrait, 4 Sensor Landscape, 5 Sensor Portrait, 6 Sensor). Портрет не используется: 3D-офис и 2D-игра в мониторе рассчитаны на альбом.
+- Мобильный ввод не дублируется: `input_devices/pointing/emulate_mouse_from_touch` по умолчанию `true` и нужен, чтобы touch работал в UI компьютера. `display/window/energy_saving/keep_screen_on` по умолчанию `true`.
+- `/build/` и `/android/` в `.gitignore` — артефакты сборки и каталог gradle-исходников не коммитятся.
+- `--export-pack` работает без дополнительных зависимостей: `build/windows/HorrorGame.pck` (~0.45 MB), 0 warning.
+- `--export-release` **требует export templates 4.7** в `%APPDATA%\Godot\export_templates\4.7.stable` (файлы `windows_debug_x86_64.exe`, `windows_release_x86_64.exe`, `android_debug.apk`, `android_release.apk`). На текущей машине их нет — установка `tpz` (≈1 GB) или CI со скачиванием шаблонов.
+- Android дополнительно требует Java SDK 17+ и Android SDK (`platform-tools` + `build-tools` c `apksigner`); пути задаются в Editor Settings → Export → Android. На машине есть только `C:\Android\platform-tools\adb.exe` (1.0.41) — `build-tools`, platforms и JDK отсутствуют, поэтому `--export-release "Android"` доходит до проверки пресета и падает на этих зависимостях, а не на самом пресете.
+- Сборка только на ПК: `git pull` на телефоне синхронизирует код, но Godot 4.7 Android Editor экспериментальный и не заменяет ПК-сборку.
+- Проверка Android-конфигурации без зависимостей: `--export-release "Android" <tmp>.apk` — пресет должен узнаваться (иначе `Unknown export preset`), а ошибки должны быть только про templates/JDK/SDK.
+

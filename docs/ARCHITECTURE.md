@@ -236,7 +236,7 @@ Touch-кнопки не дублируют логику: `ui/mobile/mobile_contr
 | PHASE 16-17 | UI, Audio | `ui/`, `systems/audio/` | готово |
 | PHASE 18 | Mobile | `ui/mobile/` | готово (нет проверки на устройстве) |
 | PHASE 19-22 | Контент, полировка, темп | `data/` | контент есть, темп не проверен |
-| PHASE 23 | QA, release | `tests/`, `export_presets.cfg` | smoke 226/226, boot 34/34; `.pck` собирается, `.exe` ждёт export templates |
+| PHASE 23 | QA, release | `tests/`, `export_presets.cfg` | smoke 226/226, boot 34/34; `.pck` собирается, пресет `Android` (universal APK) валиден; `.exe`/`.apk` ждут export templates, JDK и Android SDK |
 
 ---
 
@@ -254,3 +254,4 @@ Touch-кнопки не дублируют логику: `ui/mobile/mobile_contr
 - **Скрипт и его сцена сверяются по полным путям:** `$`-пути в `@onready` проверяются против иерархии `.tscn` (у `mail_app` и `files_app` был выдуманный узел `Split`). Smoke открывает каждое окно компьютера, чтобы `@onready`-пути падали сразу, а не в релизной сборке.
 - **Тест не повторяет архитектуру, а проходит по ней:** проверка через `grab_focus()` + `ui_accept` обходит мышь целиком и пропускает целый класс релизных багов (затенение кнопок, отсутствие маршрута ввода). Boot-тест жмёт E, кликает иконку и выходит по ESC настоящими событиями ввода.
 - **Headless-тесту нужны настенные часы, а не кадры:** без окна Godot проходит кадры намного быстрее реального времени, поэтому всё, что считает таймер (boot-анимация, затухания), ждётся через `create_timer(...)`/`_wait_until_wall`. Координаты мыши задаются в пикселях окна: `Input.parse_input_event` применяет трансформ content-scale (`Viewport.get_final_transform()`), и координаты вьюпорта попали бы в другую точку экрана.
+- **Мобильная совместимость задаётся пресетом, а не кодом:** один universal APK (`armeabi-v7a`/`arm64-v8a`/`x86`/`x86_64`) без Gradle-сборки, `GL Compatibility`, `Sensor Landscape`, `immersive` + `edge-to-edge`, ETC2/ASTC-текстуры, ноль разрешений. Ввод не дублируется под мобильные кнопки — работает `input_devices/pointing/emulate_mouse_from_touch` (включён по умолчанию), поэтому touch тянет и джойстик, и 2D-игру в мониторе, и все `Button`. Правки мобильности проверяются `--export-release "Android"`: пресет, которого нет, падает как «unknown preset», а не как «нет templates».
