@@ -17,7 +17,13 @@ const BUS_HORROR := "Horror"
 const BUS_COMPUTER := "Computer"
 const BUS_GAME2D := "Game2D"
 
-const MIX_RATE := 22050
+## Android runs its output at 48 kHz, so a 22.05 kHz stream puts every single
+## voice through the mixer's resampler. On a phone that resampler is where the
+## process dies: the crash dumps for this project are SIGSEGV/SEGV_ACCERR inside
+## `AudioTrackCallback::onMoreData` -> the Android audio driver, i.e. heap
+## corruption while mixing, not a script error. 44.1 kHz is a rate every output
+## device already handles natively, so the common case mixes without resampling.
+const MIX_RATE := 44100
 const TENSION_LEVELS := 6
 
 ## Ambience layer gain per TENSION_0..5. Linear 0..1.
@@ -193,15 +199,15 @@ func set_tension(level: int) -> void:
 	var p: AudioStreamPlayer = _loop_players.get("tension_drone")
 	if p:
 		set_loop_gain("tension_drone", linear_to_db(clampf(gain, 0.0001, 1.0)), 2.5)
-		# Comparing the stream against a freshly synthesised one would rebuild a
-		# multi-second buffer on every tension change just to throw it away, so
-		# the applied pitch is tracked instead.
+		# A drone is one looping buffer retuned, not one buffer per tension level.
+		# Swapping `p.stream` on a player that is already looping hands the mixer a
+		# playback to release mid-buffer, which is the pattern that corrupts the
+		# heap in Godot's Android AudioTrack callback. `pitch_scale` retunes the
+		# very same stream in place, so the audio thread never sees a new buffer.
 		if not is_equal_approx(_drone_hz, hz):
 			_drone_hz = hz
-			var was_playing := p.playing
-			p.stream = stream_drone(hz)
-			if was_playing:
-				p.play()
+			var base: float = tension_drone_hz[0]
+			p.pitch_scale = clampf(hz / base, 0.25, 4.0) if base > 0.0 else 1.0
 	_apply_music_layers()
 	tension_changed.emit(tension)
 
@@ -302,8 +308,20 @@ func _play_one_shot(key: String, bus_name: String, volume_db: float, pitch: floa
 	var stream := get_stream(key)
 	if stream == null:
 		return
-	var p := _pool[_pool_index]
-	_pool_index = (_pool_index + 1) % _pool.size()
+	# Never hand a still-playing player a new stream: replacing `stream` releases
+	# the playback the audio thread is mixing, which is what crashes Godot's
+	# Android AudioTrack callback. Take the next free voice instead, and only
+	# steal once the whole pool is busy.
+	var p: AudioStreamPlayer = null
+	for i in _pool.size():
+		var cand: AudioStreamPlayer = _pool[(_pool_index + i) % _pool.size()]
+		if not cand.playing:
+			p = cand
+			_pool_index = (_pool_index + i + 1) % _pool.size()
+			break
+	if p == null:
+		p = _pool[_pool_index]
+		_pool_index = (_pool_index + 1) % _pool.size()
 	p.stream = stream
 	p.bus = bus_name
 	p.volume_db = volume_db

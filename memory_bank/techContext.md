@@ -98,4 +98,6 @@
 - Android дополнительно требует Java SDK 17+ и Android SDK (`platform-tools` + `build-tools` c `apksigner`); пути задаются в Editor Settings → Export → Android. На машине есть только `C:\Android\platform-tools\adb.exe` (1.0.41) — `build-tools`, platforms и JDK отсутствуют, поэтому `--export-release "Android"` доходит до проверки пресета и падает на этих зависимостях, а не на самом пресете.
 - Сборка только на ПК: `git pull` на телефоне синхронизирует код, но Godot 4.7 Android Editor экспериментальный и не заменяет ПК-сборку.
 - Проверка Android-конфигурации без зависимостей: `--export-release "Android" <tmp>.apk` — пресет должен узнаваться (иначе `Unknown export preset`), а ошибки должны быть только про templates/JDK/SDK.
+- **Устройство для QA:** Infinix X6873, Android 16 (SDK 36), `arm64-v8a`, Mali-G615 MC6, OpenGL ES 3.2, серийник `143332559S104172`. Проект разворачивается вручную в `/sdcard/HorrorGame` и запускается Godot 4.7 Android Editor `org.godotengine.editor.v4`; отдельного APK на устройстве нет.
+- **Где смотреть нативные краши без логгера:** `adb shell dumpsys dropbox --print data_app_native_crash`. Это единственный источник, который переживает перезапуск процесса — `logcat` к моменту разбора уже ротирован. Записи `AudioTrack` с `SIGSEGV` в `libgodot_android.so` означают порчу кучи в аудиопотоке Godot, а не ошибку скрипта.
 

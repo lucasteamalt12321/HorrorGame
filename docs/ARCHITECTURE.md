@@ -109,7 +109,7 @@ COMPUTER ──▶ MONITOR (SubViewport) ──▶ 2D GAME (minigame/game_direct
 | `StoryFlags` | Единственный источник сюжетных флагов | UI | готово |
 | `StorySystem` | Главы, биты, finale-gate, prologue-подписки | Геймплей | готово |
 | `HorrorSystem` | `TENSION_0..5`, 20 событий, `pause_watch()` | Скримерный спам | готово |
-| `AudioManager` | 8 шин, синтез SFX/музыки в рантайме, 3 слоя адаптивной музыки | Сюжет | готово |
+| `AudioManager` | 8 шин, синтез SFX/музыки в рантайме, 3 слоя адаптивной музыки; `stream` играющего плеера не подменяется | Сюжет | готово |
 | `CanonRegistry` | Статический реестр глоссария канона (`RefCounted`, не autoload), `validate()` правила 11 | Геймплей | готово |
 | `CameraSystem` | Видоискатель: плавный FOV, look, смена режима | — | готово |
 | `CursorWatcher` | Наблюдает за паузой; если аномалия случилась, метка `cursor_followed` | Контент | готово |

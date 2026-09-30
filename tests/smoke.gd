@@ -494,6 +494,9 @@ func _run() -> void:
 	_check("all tasks completed", TaskSystem.completed_count() == TaskSystem.total_count(),
 		"%d / %d" % [TaskSystem.completed_count(), TaskSystem.total_count()])
 
+	_log.append("== audio buffers (Android mix safety) ==")
+	await _check_audio_safety()
+
 	_report()
 
 
@@ -512,6 +515,37 @@ func _report() -> void:
 
 
 # --- helpers -----------------------------------------------------------------
+
+## The Android build died with SIGSEGV inside `AudioTrackCallback::onMoreData`,
+## i.e. while the audio thread was mixing, not because of a script error. Two
+## rules keep that mixer in bounds and are cheap enough to assert every run:
+## every loop region must stay inside the sample buffer, and a stream must never
+## be swapped underneath a player that is already playing.
+func _check_audio_safety() -> void:
+	_check("mix rate is a native device rate", AudioManager.MIX_RATE == 44100,
+		"got %d" % AudioManager.MIX_RATE)
+
+	for key: String in AudioManager._loop_players:
+		var wav: AudioStreamWAV = AudioManager._loop_players[key].stream
+		if wav == null:
+			_check("loop '%s' has a stream" % key, false)
+			continue
+		_check("loop '%s' mix rate matches" % key, wav.mix_rate == AudioManager.MIX_RATE,
+			"got %d" % wav.mix_rate)
+		_check("loop '%s' region inside buffer" % key, wav.loop_end * 2 <= wav.data.size(),
+			"loop_end=%d data=%d" % [wav.loop_end, wav.data.size()])
+
+	var drone: AudioStreamPlayer = AudioManager._loop_players.get("tension_drone")
+	if drone == null:
+		_check("tension drone exists", false)
+		return
+	var before: AudioStreamWAV = drone.stream
+	for level in AudioManager.TENSION_LEVELS:
+		AudioManager.set_tension(level)
+		await get_tree().process_frame
+	_check("tension never swaps the drone stream", drone.stream == before)
+	_check("tension retunes the drone in place", not is_equal_approx(drone.pitch_scale, 1.0),
+		"pitch=%f" % drone.pitch_scale)
 
 ## Open one computer app and return the window it should have created.
 func _open_app_window(app_id: int, group: String) -> Node:
