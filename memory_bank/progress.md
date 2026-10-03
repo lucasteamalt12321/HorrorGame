@@ -4,7 +4,7 @@
 
 - **Текущая итерация:** ИТЕРАЦИЯ 5 (QA, canon-аудит, настройки, release) — завершена и закоммичена как `3e96600`; проверки: smoke 226/226, boot 34/34, экспорт PCK без warning.
 - **Прогресс по Project Deliverables:** 96% (см. `projectbrief.md`; 96 = 100 − 4 из `in_progress` DL-14, DL-15 и `blocked` DL-16).
-- **Last checked commit:** `64df153` (состояние до фикса аудио; проверено smoke 241/241, boot 34/34, PCK 465 072 Б).
+- **Last checked commit:** `bc8e8a3` + незакоммиченные настройки сборки. Проверено: smoke **241/241**, boot **34/34**, Android APK **109.9 MB** (exit 0), Windows PCK **470 992 Б**. Сборка Android выведена из внешнего блокера; сам краш и экран компьютера **не исправлены**.
 
 ## Что сделано до этого контекста (git history)
 
@@ -148,9 +148,15 @@ Release:
 
 Открытые:
 
-- [ ] `.exe` не собирается: нет export templates 4.7 в `%APPDATA%\Godot\export_templates\4.7.stable`. Нужен `tpz` для 4.7.stable (≈1 GB) либо оформление сборки на стороне CI/машины разработчика. **Внешний блокер.**
-- [ ] `.apk` не собирается: пресет `Android` валиден, но нет export templates (`android_debug.apk`, `android_release.apk`), Java SDK 17+ и Android SDK `build-tools` c `apksigner`. Есть только `C:\Android\platform-tools`. **Внешний блокер (DL-16).**
-- [x] **Краш «Новая смена» на Android подтверждён и исправлен.** `dumpsys dropbox --print data_app_native_crash` дал 5 записей (28.09 19:56 / 19:57 / 20:01, 30.09 10:56 ×2) для `org.godotengine.editor.v4:GodotGame`: `SIGSEGV (SEGV_ACCERR)` в `libgodot_android.so`, стек `AudioTrackCallback::onMoreData` → `processAudioBuffer` → `AudioTrackThread::threadLoop`. То есть порча кучи в аудиопотоке, а не ошибка скрипта; GPU/Mali в стеке не участвует. Код на `/sdcard/HorrorGame` совпадал с HEAD по MD5, дело не в устаревшем клоне. Причины в проекте: `MIX_RATE = 22050` (каждый голос через ресемплер микшера против 48 кГц устройства) и подмена `stream` у уже играющего плеера — в `set_tension()` (drone) и в `_play_one_shot()` (round-robin пул при 10 голосах). Исправлено: `MIX_RATE = 44100`, drone перенастраивается `pitch_scale`, пул берёт свободный голос. Покрыто `_check_audio_safety()` в smoke (241/241). Эмпирическая проверка на устройстве — после сборки APK.
+- [x] **Внешний блокер сборки снят (03.10.2026).** Установлены export templates 4.7 (`%APPDATA%\Godot\export_templates\4.7.stable`, 35 файлов), JDK 17 (`C:\Android\jdk17\jdk-17.0.20.1+1`), Android SDK (`C:\Android\build-tools` 34/35/36, `platforms;android-36`, `platform-tools`), cmdline-tools и debug-keystore; пути прописаны в `editor_settings-4.7.tres`. `.apk` **собирается** — 109.9 MB, universal 4 ABI, подписан. Требовалось три настройки, каждая диагностируется только по тексту ошибки: `import_etc2_astc=true` в `project.godot`, пустые `gradle_build/min_sdk` и `target_sdk`, и `build-tools`, совпадающий с целевым SDK.
+- [ ] **Экспорт под Android ломает `project.godot`.** Редактор при пересохранении затирает секцию `[debug]` (`gdscript/warnings/unsafe_*=0`) и дописывает `[editor_plugins]`. После экспорта обязателен `git diff -- project.godot` с откатом churn, иначе в коммит уедет удаление настроек предупреждений.
+- [ ] **Экспорт-релиз Android не собирается:** требуется release-keystore. Для QA используется `--export-debug`, APK подписан debug-keystore и ставится через `adb install -r`.
+- [ ] **Краш «Новая смена» на Android НЕ исправлен.** Локализован, но не вылечен. `dumpsys dropbox --print data_app_native_crash` дал 6 записей (28.09 ×3, 30.09 10:56 ×2, 30.09 18:01) для `org.godotengine.editor.v4:GodotGame`: `SIGSEGV (SEGV_ACCERR)` в `libgodot_android.so`, стек `AudioTrackCallback::onMoreData` → `processAudioBuffer` → `AudioTrackThread::threadLoop`, один кадр в `EmbeddedGodotGame`. Порча кучи в аудиопотоке микшера, GPU/Mali в стеке не участвует. Код на `/sdcard/HorrorGame` совпадал с HEAD по MD5 — дело не в устаревшем клоне.
+  - **Важная поправка к прежней записи в этом файле:** время жизни процесса в крашах — **6.0-6.5 с** (`Process-Runtime` из Dropbox), а не 76-84 с. 76-84 с — это `Process uptime` из tombstone, он относится к системе. Краш детерминированный и наступает во время/сразу после синтеза looping-стримов в `_start_loops()`.
+  - **Попытка `bc8e8a3` не сработала и сделала хуже:** `MIX_RATE` 22050 → 44100 и запрет подмены `stream` у играющего плеера. После неё комната не успевает прорисоваться вовсе. Причина ухудшения, вероятно, в том, что 44100 удвоил время синтеза на главном потоке и объём буферов, а падение приходит раньше. Гипотеза «22050 + подмена stream» **не подтверждена** — менять `MIX_RATE` обратно без доказательства нельзя.
+  - Требуется честная эмпирическая проверка: сборка APK, запуск через `adb`, а не «пользователь посмотрел». До неё DL-16 остаётся `blocked`, ручного подтверждения игроком не было.
+  - **Аудит синтеза образцов не дал выхода за границу.** Все генераторы (`stream_tone/noise/hum/room_tone/drone/pad/sweep/glitch/boot/crash/sting/whisper/heartbeat/arpeggio/screamer`) пишут строго `for i in n` при `s.resize(n)`; кроссфейды в `room_tone`/`drone`/`pad` читают максимум `s[n - 1]` (проверено: `fade` = 0.05/0.1/0.2 с против `n` = 2/3/4 с, всегда в границах), в `arpeggio` индекс обёрнут в `clampi`. Ошибки скрипта как причины `SIGSEGV` нет. Временный `_bisect.txt`-скелет для поштучного отключения голосов удалён — без телефона он бесполезен, а в APK `res://` недоступен для записи.
+- [ ] **Экран компьютера на Android показывает горизонтальные чёрно-розовые полосы вместо рабочего стола.** Архитектура проверена и верна: `Desktop` реально вложен в `ScreenViewport` (`scenes/game/computer/computer.tscn`), `UPDATE_ALWAYS`, `ViewportTexture` назначается в `_build_material()`. Гипотеза — непривязанный `screen_texture` в `shaders/monitor.gdshader` (сэмплер вернёт белое, `EMISSION` уйдёт в 1.69, горизонтальные полосы сканлайнов и glow окрасят его в розовый) либо ошибка компиляции шейдера на GLES3. Проверяется только на устройстве через logcat и сравнение кадров. Живой экран статической текстурой не заменять: пользователь уточнил, что он замерзает.
 - [ ] 12 (smoke) / 18 (boot) объектов `AudioStreamPlaybackWAV` в warnings при принудительном выходе из headless. Проверено экспериментом: `AudioManager.shutdown()` (остановка голосов, обнуление `stream`, чистка `_stream_cache`) плюс 3 кадра перед `quit()` не меняют число — объекты удерживает `AudioServer`, а не проект, и освобождаются только при обработке аудиопотока. Для игры и для тестов безвредно, из GDScript не лечится.
 - [ ] Ручной прогон в окне не выполнялся: хоррор-темп, читаемость UI, звук и ощущение от 3D-офиса не проверены человеком. Это последнее, что закрывает DL-14.
 - [ ] Нет QA на физическом мобильном устройстве (клавиатура/touch отправляет тот же action, но safe-area и тач-таргеты вживую не проверены).
@@ -181,6 +187,8 @@ Release:
 | 2026-09-29 | ИТЕРАЦИЯ 5, часть 11: **Android-пресет** — universal APK (4 архитектуры, без Gradle), подпись debug-keystore, immersive + edge-to-edge, все размеры экрана, ETC2/ASTC, иконки из `icon.svg`, ноль разрешений; `Sensor Landscape` вынесен в `project.godot` (`window/handheld/orientation=4`), т.к. в 4.7 ориентации нет в пресете; восстановлена секция `[debug]` в `project.godot`; DL-15 2 → 1, добавлен DL-16 (1, `blocked` по внешним зависимостям) | `export_presets.cfg`, `project.godot`, `docs/README.md`, `docs/ARCHITECTURE.md`, `memory_bank/*` |
 | 2026-09-30 | ИТЕРАЦИЯ 5, часть 12: **краш Android «Новая смена»** — 5 нативных крашей из Dropbox, `SIGSEGV` в аудиопотоке Godot; `MIX_RATE` 22050 → 44100, drone перенастраивается `pitch_scale` вместо подмены `stream`, пул one-shot берёт свободный голос; 13 новых проверок (`_check_audio_safety`), smoke 226 → 241, boot 34/34 | `systems/audio/audio_manager.gd`, `tests/smoke.gd`, `docs/ARCHITECTURE.md`, `memory_bank/*` |
 
+| 2026-10-03 | **Сборка APK переведена из «внешнего блокера» в рабочее состояние.** Установлены export templates 4.7, JDK 17, Android SDK (`build-tools` 34/35/36, `platforms;android-36`), cmdline-tools, debug-keystore; пути прописаны в `editor_settings-4.7.tres`. Исправлены три настройки, блокировавшие экспорт: `import_etc2_astc=true`, пустые `gradle_build/min_sdk`/`target_sdk`, `build-tools` под целевой SDK. `--export-debug "Android"` даёт подписанный APK 109.9 MB. Аудит синтеза образцов: выхода за границу нет, все петли `for i in n` при `s.resize(n)`. Архитектура SubViewport подтверждена (`Desktop` вложен в `ScreenViewport`), гипотеза о непривязанном `screen_texture` зафиксирована. Известные проблемы и DL-14/DL-16 оставлены открытыми — ручного подтверждения игроком не было. smoke 241/241, boot 34/34 | `project.godot`, `export_presets.cfg`, `memory_bank/*` |
+
 ## Проверка
 
 ```powershell
@@ -193,13 +201,17 @@ Release:
 # Точка входа: главное меню → новая игра → офис → компьютер (ожидается 34/34, RESULT: PASS)
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" res://tests/boot.tscn
 
-# Сборка: .pck собирается без templates, .exe и .apk требуют export templates 4.7 (+ JDK и Android SDK)
+# Сборка: .pck и .exe требуют export templates 4.7; .apk дополнительно JDK 17 + Android SDK
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --export-pack "Windows Desktop" build/windows/HorrorGame.pck
 & "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --export-release "Windows Desktop" build/windows/HorrorGame.exe
-& "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --export-release "Android" build/android/HorrorGame.apk
+# Android: debug-вариант подписан debug-keystore и ставится через adb install -r; release требует release-keystore
+& "D:\Godot 4.7\Godot_v4.7-stable_win64_console.exe" --headless --path "D:\VariousProjects\horror-game" --export-debug "Android" build/android/HorrorGame-debug.apk
+
+# После экспорта ОБЯЗАТЕЛЬНО откатывать churn редактора в project.godot (секция [debug] и [editor_plugins])
+git diff -- project.godot
 ```
 
-Проверка Android-пресета без зависимостей: запустить последнюю команду и убедиться, что пресет узнан (иначе `Unknown export preset`), а в ошибках только templates/JDK/SDK.
+Ожидаемые проверки: smoke **241/241**, boot **34/34**, `RESULT: PASS`, экспорт Android `exit 0` и APK ≈110 MB. Три настройки, без которых экспорт падает, перечислены в `techContext.md`.
 
 ## Чек-лист завершения сессии
 
