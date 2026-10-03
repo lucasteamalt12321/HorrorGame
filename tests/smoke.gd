@@ -70,6 +70,25 @@ func _run() -> void:
 	_check("interactive computer in office", computer != null)
 	_check("computer powered on", computer != null and bool(computer.get("power_on")))
 	_check("subviewport created", computer != null and computer.call("get_screen_viewport") != null)
+	if computer != null:
+		# The monitor material samples the SubViewport. An unbound sampler makes the
+		# screen shader read as white and the scanline/glow pass turns it pink, which
+		# is what the player saw on Android, so binding is asserted explicitly.
+		var svp := computer.call("get_screen_viewport") as SubViewport
+		var screen := computer.get_node_or_null("Screen") as MeshInstance3D
+		_check("monitor mesh present", screen != null)
+		var mat := screen.material_override as ShaderMaterial if screen != null else null
+		_check("monitor uses a ShaderMaterial", mat != null)
+		if mat != null:
+			_check("monitor shader assigned", mat.shader != null)
+			var param: Variant = mat.get_shader_parameter("screen_texture")
+			_check("monitor sampler is a ViewportTexture", param is ViewportTexture)
+			if param is ViewportTexture:
+				_check("monitor sampler points at ScreenViewport",
+					svp != null and svp.get_node_or_null((param as ViewportTexture).viewport_path) == svp)
+		_check("subviewport updates every frame", svp != null and svp.render_target_update_mode == SubViewport.UPDATE_ALWAYS)
+		_check("desktop instanced inside subviewport",
+			svp != null and svp.get_node_or_null("Desktop") != null)
 	_check("game_root present", get_tree().get_first_node_in_group("game_root") != null)
 	_check("hud present", get_tree().get_first_node_in_group("hud") != null)
 

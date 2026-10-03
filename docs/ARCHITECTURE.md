@@ -129,6 +129,7 @@ Minigame (Node2D: game_director + player_2d + зоны багов + bug_effect)
 ```
 
 - 2D-игра живёт в `SubViewport`, её текстура вешается на материал экрана монитора.
+- **Инвариант привязки** (проверяется в `tests/smoke.gd`, не визуально): `Screen.material_override` — `ShaderMaterial` с непустым `shader`; параметр `screen_texture` — `ViewportTexture`, чей `viewport_path` указывает именно на `ScreenViewport`; `SubViewport.render_target_update_mode == UPDATE_ALWAYS`; внутри `ScreenViewport` есть инстанс `Desktop`. Нарушение любого пункта даёт не пустой чёрный экран, а белый сэмплер → `EMISSION` в 1.69 → горизонтальные розовые полосы сканлайнов. Статической текстурой экран не заменяется: он обязан оставаться живым.
 - Управление при активном мониторе маршрутизируется в `MinigameSystem`, а не в `Player`.
 - Никаких отдельных окон ОС — всё внутри игрового мира (ТЗ, стадия 10).
 - `minigame/game_director.gd` собирает уровень из `LevelResource` кодом (платформы, зоны, пикапы, точки появления).
