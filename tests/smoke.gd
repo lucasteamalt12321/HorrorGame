@@ -84,8 +84,15 @@ func _run() -> void:
 			var param: Variant = mat.get_shader_parameter("screen_texture")
 			_check("monitor sampler is a ViewportTexture", param is ViewportTexture)
 			if param is ViewportTexture:
-				_check("monitor sampler points at ScreenViewport",
-					svp != null and svp.get_node_or_null((param as ViewportTexture).viewport_path) == svp)
+				# Identity, not a path string. An unresolved ViewportTexture still
+				# passes a viewport_path check while the driver receives no texture
+				# and the mesh renders magenta; only object identity guarantees the
+				# render target is actually bound.
+				_check("monitor sampler is ScreenViewport's own texture",
+					svp != null and param == svp.get_texture())
+				# The bound object must also carry a usable render target.
+				_check("monitor sampler has a valid render target",
+					(param as ViewportTexture).get_rid().is_valid())
 		_check("subviewport updates every frame", svp != null and svp.render_target_update_mode == SubViewport.UPDATE_ALWAYS)
 		_check("desktop instanced inside subviewport",
 			svp != null and svp.get_node_or_null("Desktop") != null)

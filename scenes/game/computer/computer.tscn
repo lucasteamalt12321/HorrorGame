@@ -18,6 +18,7 @@ size = Vector3(1.4, 0.93, 0.14)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_screen"]
 size = Vector2(1.24, 0.77)
+orientation = 2
 
 [sub_resource type="BoxMesh" id="BoxMesh_stand"]
 size = Vector3(0.13, 0.34, 0.13)

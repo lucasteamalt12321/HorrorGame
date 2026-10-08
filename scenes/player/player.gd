@@ -50,6 +50,11 @@ var _look_scale: float = 1.0
 var _invert_y: bool = false
 var _was_on_floor: bool = true
 var _flashlight_on: bool = false
+## Monitor framing: bounds cached for as long as the player is seated, the world
+## point the eye is pinned on, and whether the pin is active at all.
+var _computer_bounds := {}
+var _computer_focus := Vector3.ZERO
+var _computer_view_active := false
 
 
 func _ready() -> void:
@@ -62,6 +67,8 @@ func _ready() -> void:
 	_apply_settings()
 	_was_on_floor = is_on_floor()
 	_set_flashlight(flashlight_start_on)
+	ComputerSystem.entered.connect(_on_computer_entered)
+	ComputerSystem.exited.connect(_on_computer_exited)
 
 
 func _apply_settings() -> void:
@@ -86,6 +93,76 @@ func set_fov_scale(value: float) -> void:
 ## A raised viewfinder steadies the aim instead of making it twitchy.
 func set_look_scale(value: float) -> void:
 	_look_scale = clampf(value, 0.1, 1.0)
+
+
+# --- computer view -----------------------------------------------------------
+#
+# Sitting down has to land the eye on the monitor. With the aim left where it
+# was, the view swings past the quad, the desktop shows up as a thin strip along
+# one edge and the text reads as unreadable speckle - which is what "the screen
+# is too small" actually is. Frame the screen on enter, widen back out on leave.
+
+func _on_computer_entered(computer: Node3D) -> void:
+	if head == null or not is_instance_valid(computer):
+		return
+	if not computer.has_method("get_screen_bounds"):
+		return
+	_computer_bounds = computer.call("get_screen_bounds") as Dictionary
+	_computer_focus = _computer_bounds.get("center", computer.global_position) as Vector3
+	_computer_view_active = true
+	_frame_monitor()
+
+
+func _on_computer_exited() -> void:
+	_computer_view_active = false
+	_computer_bounds = {}
+	set_fov_scale(1.0)
+
+
+## Pin the eye on the monitor on every frame rather than once on entry, and keep
+## the framing honest while doing it. The player can still be settling into the
+## chair when `entered` fires, so an aim taken at that instant is measured from a
+## head that is about to drop, and the view it leaves behind points at the floor;
+## the same settling moves the eye close enough that a FOV solved once comes out
+## too wide and shaves the right edge off the desktop. The bounds are read once,
+## only the arithmetic is repeated, and the camera is touched only when the
+## answer actually moves.
+func _frame_monitor() -> void:
+	if not _computer_view_active or head == null:
+		return
+	head.look_at(_computer_focus, Vector3.UP)
+	var wanted := _fit_fov_scale(_computer_focus, _computer_bounds)
+	if not is_equal_approx(wanted, _fov_scale):
+		set_fov_scale(wanted)
+
+
+## Narrow the FOV just far enough to hold the quad plus a margin at the distance
+## the player is actually sitting at, so the whole desktop lands inside the frame
+## and is drawn as large as the framing allows. Never widens past the base FOV:
+## a monitor seen from across the room is better walked up to than zoomed out
+## for, and a zoom would make the text smaller, not larger.
+func _fit_fov_scale(center: Vector3, bounds: Dictionary) -> float:
+	var dist := maxf(head.global_position.distance_to(center), 0.5)
+	var margin := 1.1
+	var half_u := float(bounds.get("half_u", 0.6)) * margin
+	var half_v := float(bounds.get("half_v", 0.4)) * margin
+	# Godot's FOV is vertical: the vertical axis binds directly, while the
+	# horizontal axis has to be converted through the viewport aspect first.
+	var needed := 2.0 * atan(half_v / dist)
+	needed = maxf(needed, 2.0 * atan(half_u / dist / maxf(_viewport_aspect(), 0.1)))
+	# `atan` yields radians and `default_fov` is exported in degrees; dividing one
+	# by the other directly collapses to the clamp floor and zooms all the way in.
+	return clampf(rad_to_deg(needed) / maxf(_base_fov, 1.0), 0.3, 1.0)
+
+
+func _viewport_aspect() -> float:
+	var vp := get_viewport()
+	if vp == null:
+		return 1.0
+	var size := vp.get_visible_rect().size
+	if size.y <= 0.0:
+		return 1.0
+	return size.x / size.y
 
 
 # --- flashlight --------------------------------------------------------------
@@ -132,6 +209,7 @@ func apply_look(delta: Vector2) -> void:
 func _physics_process(delta: float) -> void:
 	apply_look(look_delta)
 	look_delta = Vector2.ZERO
+	_frame_monitor()
 
 	if not is_on_floor():
 		velocity.y -= gravity * delta

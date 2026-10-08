@@ -41,8 +41,13 @@ func _ready() -> void:
 
 
 func _build_material() -> void:
-	var tex := ViewportTexture.new()
-	tex.viewport_path = screen_viewport.get_path()
+	# Bind the SubViewport's own texture object directly. Building a fresh
+	# ViewportTexture and setting `viewport_path` relies on lazy path resolution,
+	# which does not always bind: when it fails the driver gets no texture and the
+	# screen mesh renders bright magenta instead of the desktop. get_texture()
+	# hands over the already-created RID-backed object, so there is nothing left to
+	# resolve later.
+	var tex := screen_viewport.get_texture()
 	_material = ShaderMaterial.new()
 	var shader: Shader = load("res://shaders/monitor.gdshader")
 	if shader != null:
@@ -81,6 +86,18 @@ func get_monitor_node() -> Node3D:
 
 func get_screen_viewport() -> SubViewport:
 	return screen_viewport
+
+
+## World centre of the screen quad plus its half extents, so the player's view
+## can be framed on the monitor without knowing which axis the mesh was authored
+## against: the frame is measured from the mesh AABB, never assumed.
+func get_screen_bounds() -> Dictionary:
+	var frame := _screen_frame()
+	return {
+		"center": screen_mesh.global_transform * frame.center,
+		"half_u": frame.su * 0.5,
+		"half_v": frame.sv * 0.5,
+	}
 
 
 # --- input routing -----------------------------------------------------------
