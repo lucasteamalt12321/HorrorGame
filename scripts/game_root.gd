@@ -97,6 +97,11 @@ func _input(event: InputEvent) -> void:
 	# the screen are consumed, so the pause menu and the gallery keep working.
 	if not GameManager.is_in_computer():
 		return
+	# While the 2D game is running the screen is a gamepad, not a desktop:
+	# stray clicks must not leak to the hidden desktop behind it. The shutter
+	# is a key (action `photo`), so nothing here needs the mouse.
+	if GameManager.mode == GameManager.Mode.MINIGAME:
+		return
 	if not (event is InputEventMouse):
 		return
 	var mon := ComputerSystem.get_monitor()
@@ -124,6 +129,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if not GameManager.is_exploring():
+		# The shutter has no place on the desktop, but the 2D game is the
+		# thing under test: while it runs, the photo key (and the touch photo
+		# button) capture whatever anomaly is on the screen.
+		if (GameManager.mode == GameManager.Mode.MINIGAME
+				and event.is_action_pressed("photo")
+				and not is_gallery_open()):
+			if PhotoSystem.take_photo() == null:
+				AudioManager.play_computer("error")
 		return
 
 	if event.is_action_pressed("gallery"):

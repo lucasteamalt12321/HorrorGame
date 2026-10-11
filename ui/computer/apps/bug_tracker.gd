@@ -73,7 +73,7 @@ func _on_selected(index: int) -> void:
 func _show_detail(bug_id: String) -> void:
 	if bug_id == "":
 		detail_title.text = "Выберите запись"
-		detail_body.text = "Список заполняется по мере находок.\nДоказательство: ЛКМ в кадре аномалии."
+		detail_body.text = "Список заполняется по мере находок.\nДоказательство: C в кадре аномалии."
 		photo_label.text = ""
 		submit.disabled = true
 		return

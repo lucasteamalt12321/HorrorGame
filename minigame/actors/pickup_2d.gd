@@ -14,26 +14,34 @@ const TILE := 16
 var _time: float = 0.0
 var _taken: bool = false
 var _sprite: Node2D
+var _bounds: Rect2 = Rect2(-3.0, -3.0, 6.0, 6.0)
 
 
 func _ready() -> void:
 	add_to_group("minigame_pickup")
 	base_position = global_position
-	var shape := CircleShape2D.new()
-	shape.radius = 5.0
-	var col := CollisionShape2D.new()
-	col.shape = shape
-	add_child(col)
+	_build_sprite()
+	_build_collision()
+	body_entered.connect(_on_body_entered)
 
+
+func _build_sprite() -> void:
 	_sprite = Node2D.new()
 	add_child(_sprite)
 	var r := ColorRect.new()
-	r.position = Vector2(-3, -3)
-	r.size = Vector2(6, 6)
+	r.position = _bounds.position
+	r.size = _bounds.size
 	r.color = Color(0.4, 0.95, 0.7)
 	_sprite.add_child(r)
 
-	body_entered.connect(_on_body_entered)
+
+func _build_collision() -> void:
+	var shape := RectangleShape2D.new()
+	shape.size = _bounds.size
+	var col := CollisionShape2D.new()
+	col.shape = shape
+	col.position = _bounds.position + _bounds.size * 0.5
+	add_child(col)
 
 
 func _process(delta: float) -> void:

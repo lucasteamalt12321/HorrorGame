@@ -103,6 +103,20 @@ func _build_hud() -> void:
 	msg.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hud_root.add_child(msg)
 
+	# The shutter control is permanent chrome: the player must never have to
+	# guess how to document an anomaly they can see.
+	var shutter := Label.new()
+	shutter.name = "ShutterHint"
+	shutter.position = Vector2(4, 32)
+	shutter.size = Vector2(170, 12)
+	shutter.add_theme_font_size_override("font_size", 6)
+	shutter.add_theme_color_override("font_color", Color(0.72, 0.84, 0.98))
+	shutter.add_theme_constant_override("outline_size", 2)
+	shutter.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	shutter.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	shutter.text = "СНИМОК: %s" % MinigameSystem.photo_action_hint()
+	hud_root.add_child(shutter)
+
 
 # --- level construction -----------------------------------------------------
 

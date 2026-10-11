@@ -35,23 +35,17 @@ var _leg_r: ColorRect
 var _body: ColorRect
 var _head: ColorRect
 var _badge: ColorRect
+var _rects: Array[Rect2] = []
+var _half_extents: Vector2 = Vector2(4.0, 9.0)
 
 
 func _ready() -> void:
 	add_to_group("minigame_player")
 	z_index = 5
-	_build_collision()
 	_build_sprite()
+	_build_collision()
 	floor_snap_length = 4.0
 	floor_max_angle = deg_to_rad(50.0)
-
-
-func _build_collision() -> void:
-	var shape := RectangleShape2D.new()
-	shape.size = Vector2(10, 14)
-	var col := CollisionShape2D.new()
-	col.shape = shape
-	add_child(col)
 
 
 func _build_sprite() -> void:
@@ -74,7 +68,30 @@ func _rect(pos: Vector2, size: Vector2, color: Color) -> ColorRect:
 	r.size = size
 	r.color = color
 	_sprite.add_child(r)
+	_rects.append(Rect2(pos, size))
 	return r
+
+
+func _build_collision() -> void:
+	var bounds := _sprite_bounds()
+	var shape := RectangleShape2D.new()
+	shape.size = bounds.size
+	var col := CollisionShape2D.new()
+	col.shape = shape
+	col.position = bounds.position + bounds.size * 0.5
+	add_child(col)
+	_half_extents = bounds.size * 0.5
+
+
+func _sprite_bounds() -> Rect2:
+	var bounds := _rects[0]
+	for r in _rects:
+		bounds = bounds.merge(r)
+	return bounds
+
+
+func get_half_extents() -> Vector2:
+	return _half_extents
 
 
 func _physics_process(delta: float) -> void:

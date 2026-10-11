@@ -87,6 +87,8 @@ COMPUTER ──▶ MONITOR (SubViewport) ──▶ 2D GAME (minigame/game_direct
    │                            баг в зоне → BugSystem
    │                                         ▼
    └─── (выход)                 PHOTO (photo) → PhotoSystem → PhotoEvidence
+                                             ▲   в EXPLORE — офис, в MINIGAME —
+                                             │   видимая аномалия 2D-игры в кадре
                                              ▼
                                     REPORT → TaskSystem → NEXT TASK
                                              ▼
@@ -215,7 +217,7 @@ class_name TaskResource extends Resource
 | `move_forward` / `move_backward` / `move_left` / `move_right` | W / S / A / D | движение |
 | `jump` | Space | прыжок (3D) |
 | `interact` | E | взаимодействие / вход в 2D-игру |
-| `photo` | ЛКМ | снимок |
+| `photo` | C | снимок |
 | `pause` | P | пауза (аномалия при паузе) |
 | `minigame_jump` | Space в контексте 2D | прыжок 2D-игры |
 | `gallery` | G | галерея фото |
@@ -223,7 +225,7 @@ class_name TaskResource extends Resource
 | `camera_viewfinder` | ПКМ | поднять камеру-видоискатель (`CameraSystem`) |
 | `flashlight` | F | фонарь (`Player.Head.Flashlight`) |
 
-`photo` и `camera_viewfinder` не конфликтуют: снимок делается и при поднятом видоискателе.
+ЛКМ — обычный клик по интерфейсу (рабочий стол компьютера); снимок вынесен на клавишу `photo` (C) и не конфликтует с `camera_viewfinder` (ПКМ), который лишь поднимает видоискатель. В режиме MINIGAME мышь не маршрутизируется в монитор (клики не утекают в скрытый рабочий стол): клавиша `photo` (или тач-кнопка «ФОТО») фиксирует аномалию, видимую в кадре 2D-игры; `PhotoSystem` берёт её из `MinigameSystem.describe_active_bug()`, а игрок видит подсказку и подтверждение на самом экране.
 Touch-кнопки не дублируют логику: `ui/mobile/mobile_controls.gd` шлёт `InputEventAction` с тем же action, что и клавиатура, через `Input.parse_input_event()`.
 
 ---

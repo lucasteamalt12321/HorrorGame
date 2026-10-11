@@ -268,6 +268,29 @@ func _run() -> void:
 	await get_tree().process_frame
 	_log.append("  tasks completed after level: %d / %d" % [TaskSystem.completed_count(), TaskSystem.total_count()])
 
+	# The minigame is a game the player can SEE: its hitboxes must sit exactly
+	# where the sprite is drawn, otherwise a touch that kills or a shard that
+	# "contacts" breaks the player's trust faster than any horror beat.
+	_log.append("== minigame sprites match their hitboxes ==")
+	var _walk_actor := MinigameEnemy.new()
+	var _flyer := MinigameEnemy.new()
+	_flyer.kind = MinigameEnemy.Kind.FLYER
+	for pair: Array in [
+		["player", MinigamePlayer.new()],
+		["walker", _walk_actor],
+		["flyer", _flyer],
+		["pickup", MinigamePickup.new()],
+	]:
+		var actor := pair[1] as Node2D
+		actor.position = Vector2.ZERO
+		add_child(actor)
+		var visual := _actor_visual_bounds(actor)
+		var collision := _actor_collision_rect(actor)
+		_check("minigame %s hitbox matches sprite" % pair[0],
+			visual != Rect2() and visual == collision,
+			"visual=%s collision=%s" % [visual, collision])
+		actor.queue_free()
+
 	_log.append("== canon flag (T07 gate) ==")
 	var before_seen := StoryFlags.has_flag(&"canon_term_seen")
 	CanonRegistry.mark_all_seen()
@@ -504,6 +527,64 @@ func _run() -> void:
 		await get_tree().process_frame
 		_check("level %s stopped" % lvl.id, not MinigameSystem.is_game_running())
 
+	_log.append("== minigame bug shutter (клавиша фото фиксирует баг) ==")
+	# The 2D game is what the tester documents: while it runs, the photo key
+	# must reach PhotoSystem and file evidence for the anomaly in frame. Find
+	# one anomaly the design allows right now and stand in its zone.
+	var pick_level := -1
+	var pick_zone := -1
+	var pick_bug := ""
+	for li: int in MinigameSystem.level_count():
+		var l0 := MinigameSystem.get_level(li)
+		if l0 == null:
+			continue
+		for zi: int in l0.bug_trigger_zones.size():
+			var bid := l0.zone_bug_id(zi)
+			var b := BugSystem.get_bug(bid)
+			if b == null or b.kind == BugResource.Kind.UNPHOTOGRAPHABLE:
+				continue
+			if BugSystem.activate_bug(bid):
+				pick_level = li
+				pick_zone = zi
+				pick_bug = bid
+				break
+		if pick_bug != "":
+			break
+	_check("a photographable anomaly is available", pick_bug != "", "picked=%s" % pick_bug)
+	if pick_bug != "":
+		MinigameSystem.launch_from_desktop(pick_level)
+		await get_tree().process_frame
+		var sgame := MinigameSystem.get_game()
+		_check("game runs for the shutter test", sgame != null and MinigameSystem.is_game_running())
+		if sgame != null and sgame.has_method("_spawn_effect"):
+			sgame.call("_spawn_effect", pick_zone)
+		await get_tree().process_frame
+		# Pin the visible marker to the centre of the frame so the geometry is
+		# deterministic instead of depending on where the patrol happens to be.
+		var s_effects: Array = sgame.get("_effects") if sgame != null else []
+		var s_effect: BugEffect = s_effects.back() if not s_effects.is_empty() else null
+		if s_effect != null and s_effect.target is Node2D:
+			(s_effect.target as Node2D).global_position = Vector2(160, 120)
+		if sgame != null:
+			sgame.call("set_frozen", true)
+		await get_tree().process_frame
+		var shot_desc := MinigameSystem.describe_active_bug()
+		_check("the active anomaly reads as in-frame", bool(shot_desc.get("valid", false)),
+			"ndc=%s bug=%s" % [str(shot_desc.get("ndc")), str(shot_desc.get("bug_id"))])
+		var before_shutter := PhotoSystem.count()
+		await _press_action("photo")
+		var shot: PhotoRecord = PhotoSystem.photos.back() if not PhotoSystem.photos.is_empty() else null
+		_check("the photo key shoots while the 2D game runs",
+			PhotoSystem.count() == before_shutter + 1 and shot != null and shot.source == "monitor",
+			"count=%d source=%s" % [PhotoSystem.count(), shot.source if shot != null else "<null>"])
+		_check("the shot documents the anomaly on screen",
+			shot != null and shot.bug_id == pick_bug and shot.valid,
+			"bug=%s valid=%s" % [shot.bug_id if shot != null else "<null>",
+				str(shot.valid) if shot != null else "<null>"])
+		_check("the anomaly is filed as photographed", BugSystem.is_photo_valid(pick_bug))
+		MinigameSystem.force_stop("smoke")
+		await get_tree().process_frame
+
 	_log.append("== save round trip ==")
 	var saved := SaveSystem.save_game(SaveSystem.AUTOSAVE_SLOT)
 	_check("autosave written", saved)
@@ -686,6 +767,28 @@ func _world_child_count(game: Node) -> int:
 	if world == null:
 		return 0
 	return world.get_child_count()
+
+
+## Axis-aligned union of every ColorRect the minigame actor draws, in the
+## actor's own space. The sprite root sits at the actor origin with unit scale
+## at build time, so global rects equal local ones for a freshly made actor.
+func _actor_visual_bounds(actor: Node2D) -> Rect2:
+	var controls := actor.find_children("*", "ColorRect", true, false)
+	if controls.is_empty():
+		return Rect2()
+	var bounds := (controls[0] as Control).get_global_rect()
+	for c in controls.slice(1):
+		bounds = bounds.merge((c as Control).get_global_rect())
+	return bounds
+
+
+func _actor_collision_rect(actor: Node2D) -> Rect2:
+	for child in actor.get_children():
+		if child is CollisionShape2D:
+			var shape := (child as CollisionShape2D).shape as RectangleShape2D
+			if shape != null:
+				return Rect2((child as CollisionShape2D).position - shape.size * 0.5, shape.size)
+	return Rect2()
 
 
 ## Delivers a full press/release pair through the same InputEventAction path the

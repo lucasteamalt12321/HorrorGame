@@ -26,6 +26,8 @@ var _dir: int = 1
 var _time: float = 0.0
 var _sprite: Node2D
 var _eye: ColorRect
+var _rects: Array[Rect2] = []
+var _half_extents: Vector2 = Vector2(4.0, 5.0)
 
 
 func _ready() -> void:
@@ -36,12 +38,6 @@ func _ready() -> void:
 
 
 func _build() -> void:
-	var shape := RectangleShape2D.new()
-	shape.size = Vector2(10, 12)
-	var col := CollisionShape2D.new()
-	col.shape = shape
-	add_child(col)
-
 	_sprite = Node2D.new()
 	add_child(_sprite)
 	var body := ColorRect.new()
@@ -62,6 +58,25 @@ func _build() -> void:
 		wing.size = Vector2(14, 3)
 		wing.color = color_body.darkened(0.3)
 		_sprite.add_child(wing)
+		_rects.append(Rect2(wing.position, wing.size))
+	_rects.append(Rect2(body.position, body.size))
+	_rects.append(Rect2(_eye.position, _eye.size))
+
+	var bounds := _sprite_bounds()
+	var shape := RectangleShape2D.new()
+	shape.size = bounds.size
+	var col := CollisionShape2D.new()
+	col.shape = shape
+	col.position = bounds.position + bounds.size * 0.5
+	add_child(col)
+	_half_extents = bounds.size * 0.5
+
+
+func _sprite_bounds() -> Rect2:
+	var bounds := _rects[0]
+	for r in _rects:
+		bounds = bounds.merge(r)
+	return bounds
 
 
 func _physics_process(delta: float) -> void:
@@ -136,13 +151,12 @@ func _idle(delta: float) -> void:
 func _check_contact() -> void:
 	if not contact_damage or player == null or not is_instance_valid(player):
 		return
-	if not (player as MinigamePlayer).alive:
+	var p := player as MinigamePlayer
+	if p == null or not p.alive:
 		return
-	var body: PhysicsBody2D = player as PhysicsBody2D
-	if body == null:
-		return
-	var d := (body.global_position - global_position).abs()
-	if d.x < 8.0 and d.y < 12.0:
+	var d := (p.global_position - global_position).abs()
+	var reach := _half_extents + p.get_half_extents()
+	if d.x < reach.x and d.y < reach.y:
 		touched_player.emit()
 
 

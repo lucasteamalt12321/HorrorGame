@@ -40,7 +40,7 @@ theme_override_constants/separation = 3
 
 [node name="Hint" type="Label" parent="VBox"]
 layout_mode = 2
-text = "WASD — движение · мышь — обзор · E — взаимодействие · ЛКМ — фото · Esc — пауза"
+text = "WASD — движение · мышь — обзор · E — взаимодействие · C — фото · Esc — пауза"
 theme_override_font_sizes/font_size = 7
 theme_override_colors/font_color = Color(0.55, 0.65, 0.78, 1)
 autowrap_mode = 2

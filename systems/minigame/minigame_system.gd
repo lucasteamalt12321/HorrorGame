@@ -30,6 +30,7 @@ var _last_stop_reason: String = ""
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	SaveSystem.register(&"minigame", self)
+	PhotoSystem.photo_taken.connect(_on_photo_taken)
 	load_levels()
 
 
@@ -261,6 +262,7 @@ func notify_zone_entered(zone_index: int) -> void:
 	if BugSystem.activate_bug(bug_id):
 		AudioManager.play_game2d("bug")
 		DialogueSystem.queue_line("[ запись лога: аномалия ]", "MinigameSystem")
+		_hint_shutter(bug_id)
 
 
 func notify_zone_exited(zone_index: int) -> void:
@@ -270,6 +272,42 @@ func notify_zone_exited(zone_index: int) -> void:
 	var bug_id := l.zone_bug_id(zone_index)
 	if bug_id != "":
 		BugSystem.deactivate_bug(bug_id)
+
+
+## Tells the player, on the 2D screen itself, how to document what they see.
+func _hint_shutter(bug_id: String) -> void:
+	if _game == null or not _game.has_method("show_message"):
+		return
+	var bug := BugSystem.get_bug(bug_id)
+	if bug != null and bug.kind == BugResource.Kind.UNPHOTOGRAPHABLE:
+		_game.call("show_message", "Аномалию снять нельзя — нужен журнал", 3.0)
+		return
+	_game.call("show_message",
+		"АНОМАЛИЯ В КАДРЕ — %s: снимок" % photo_action_hint(), 3.0)
+
+
+## How the player triggers the shutter on this platform, for on-screen hints.
+func photo_action_hint() -> String:
+	if GameManager.is_mobile():
+		return "кнопка «ФОТО»"
+	for ev: InputEvent in InputMap.action_get_events(&"photo"):
+		if ev is InputEventKey and (ev as InputEventKey).physical_keycode != 0:
+			return OS.get_keycode_string((ev as InputEventKey).physical_keycode)
+	return "клавиша снимка"
+
+
+## The shutter fired while the game was running: confirm it on the 2D screen.
+func _on_photo_taken(rec: PhotoRecord) -> void:
+	if not is_game_running() or _game == null or not _game.has_method("show_message"):
+		return
+	if rec.valid and rec.bug_id != "":
+		var bug := BugSystem.get_bug(rec.bug_id)
+		var title := bug.title if bug != null else rec.bug_id
+		_game.call("show_message", "ЗАФИКСИРОВАНО: %s" % title, 2.5)
+	elif rec.bug_id != "":
+		_game.call("show_message", "Аномалия вне кадра — встаньте напротив", 2.0)
+	else:
+		_game.call("show_message", "В кадре нет аномалии", 2.0)
 
 
 func _deactivate_level_bugs() -> void:
